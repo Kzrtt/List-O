@@ -247,7 +247,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                               children: [
                                 ItemTile(
                                     constraints: constraints,
-                                    list: item.isChecked!.toString(),
+                                    list: item.name!,
                                     details: "${item.quantity} ${item.measurementUnity}",
                                     index: (index + 1).toString(),
                                     isChecked: item.isChecked!,
