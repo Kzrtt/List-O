@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
+import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/utils/AppController.dart';
 
 class ButtonWithIcon extends StatelessWidget {
   String buttonText;
@@ -31,49 +34,55 @@ class ButtonWithIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(borderRadius),
-          ),
-          color: buttonColor ?? LightColorPalette.buttonColor,
-        ),
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              isTrailing!
-                  ? const Center()
-                  : Icon(
-                      icon,
-                      size: iconSize ?? 16,
-                      color: iconColor ?? LightColorPalette.titleColor,
-                    ),
-              isTrailing! ? const Center() : const SizedBox(width: 10),
-              Text(
-                buttonText,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: textColor ?? LightColorPalette.titleColor,
-                  fontWeight: FontWeight.w500,
-                ),
+    return Consumer(
+      builder: (context, ref, child) {
+        final palette = ref.watch(themeProvider).value;
+
+        return InkWell(
+          onTap: onTap,
+          child: Container(
+            height: height,
+            width: width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(borderRadius),
               ),
-              isTrailing! ? const SizedBox(width: 10) : const Center(),
-              isTrailing!
-                  ? Icon(
-                      icon,
-                      size: iconSize ?? 16,
-                      color: iconColor ?? LightColorPalette.titleColor,
-                    )
-                  : const Center()
-            ],
+              color: buttonColor ?? palette.buttonColor.withOpacity(.5),
+            ),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  isTrailing!
+                      ? const Center()
+                      : Icon(
+                          icon,
+                          size: iconSize ?? 16,
+                          color: iconColor ?? palette.titleColor,
+                        ),
+                  isTrailing! ? const Center() : const SizedBox(width: 10),
+                  Text(
+                    buttonText,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: textColor ?? palette.titleColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  isTrailing! ? const SizedBox(width: 10) : const Center(),
+                  isTrailing!
+                      ? Icon(
+                          icon,
+                          size: iconSize ?? 16,
+                          color: palette.titleColor,
+                        )
+                      : const Center()
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -1,32 +1,33 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/models/List.dart';
-import 'package:prj_list_app/utils/AppController.dart';
-import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/utils/validators.dart';
 import 'package:prj_list_app/widgets/buttonWithIcon.dart';
 import 'package:prj_list_app/widgets/header.dart';
+import 'package:prj_list_app/widgets/itemTile.dart';
 import 'package:prj_list_app/widgets/listTile.dart';
-import 'package:prj_list_app/widgets/miniButton.dart';
 import 'package:prj_list_app/widgets/textForms.dart';
-import 'package:quickalert/quickalert.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class ListDetailsScreen extends StatefulWidget {
+  final String listId;
+
+  const ListDetailsScreen({
+    super.key,
+    required this.listId,
+  });
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ListDetailsScreen> createState() => _ListDetailsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final addListFormKey = GlobalKey<FormState>();
+class _ListDetailsScreenState extends State<ListDetailsScreen> {
+  final addItemFormKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +35,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Consumer(
         builder: (context, ref, child) {
           final palette = ref.watch(themeProvider).value;
-          final listProvider = ref.watch(itemListProvider).value;
+          final lists = ref.watch(itemListProvider).value;
 
-          showModal(AppPalette palette, ItemList listParam) {
-            ItemList list = ItemList(alteredIn: DateTime.now());
+          ItemList list = ItemList(alteredIn: DateTime.now());
+          for (var i = 0; i < lists.length; i++) {
+            if (lists[i].itemId == widget.listId) {
+              list = lists[i];
+            }
+          }
+
+          showModal(AppPalette palette) {
+            Item item = Item();
+            String selectedUn = "";
 
             showModalBottomSheet(
               context: context,
@@ -46,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     return Container(
-                      height: 700,
+                      height: 750,
                       width: constraints.maxWidth,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(
@@ -82,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    listParam.name != "create" ? "Editar Lista: " : "Adicionar Lista :",
+                                    "Adicionar Item :",
                                     style: TextStyle(
                                       color: palette.titleColor,
                                       fontWeight: FontWeight.w600,
@@ -91,30 +100,50 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   const SizedBox(height: 20),
                                   Form(
-                                    key: addListFormKey,
+                                    key: addItemFormKey,
                                     child: Column(
                                       children: [
                                         CustomTextFormField(
                                           width: .95,
                                           constraints: constraints,
-                                          hintText: "Nome da Lista",
+                                          hintText: "Nome do Item",
                                           label: "Nome",
-                                          initialValue: listParam.name == "create" ? "" : listParam.name,
                                           palette: palette,
-                                          onSaved: (text) => list.name = text!,
+                                          onSaved: (text) => item.name = text!,
                                           validator: (text) => Validator.validateNotEmpty(text),
                                         ),
                                         const SizedBox(height: 20),
                                         CustomTextFormField(
                                           width: .95,
                                           constraints: constraints,
-                                          hintText: "Detalhes da Lista",
+                                          hintText: "Quantidade Item",
                                           label: "Detalhes",
-                                          initialValue: listParam.details,
                                           palette: palette,
-                                          onSaved: (text) => list.details = text!,
+                                          onSaved: (text) => item.quantity = text!,
                                           validator: (text) => Validator.validateNotEmpty(text),
                                         ),
+                                        const SizedBox(height: 20),
+                                        DropdownTextForm(
+                                          constraints: constraints,
+                                          dropdownItems: const [
+                                            "Unidades",
+                                            "gramas",
+                                            "kilos",
+                                            "litros",
+                                          ],
+                                          hintText: "Unidade de Medida",
+                                          selectedItem: selectedUn,
+                                          label: "Selecione a unidade de medida",
+                                          palette: palette,
+                                          width: .95,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedUn = value!;
+                                            });
+                                          },
+                                          onSaved: (text) => item.measurementUnity = text!,
+                                        ),
+                                        const SizedBox(height: 20),
                                       ],
                                     ),
                                   ),
@@ -134,19 +163,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                         textColor: Colors.red,
                                       ),
                                       ButtonWithIcon(
-                                        buttonText: listParam.name != "create" ? "Editar" : "Salvar",
+                                        buttonText: "Salvar",
                                         height: 40,
                                         width: constraints.maxWidth * .4,
                                         borderRadius: 10,
                                         onTap: () {
-                                          if (addListFormKey.currentState!.validate()) {
-                                            addListFormKey.currentState!.save();
-                                            if (listParam.name == "create") {
-                                              ref.read(itemListProvider.notifier).addItem(list);
-                                            } else {
-                                              list.alteredIn = DateTime.now();
-                                              ref.read(itemListProvider.notifier).updateItem(listParam.itemId, list);
-                                            }
+                                          if (addItemFormKey.currentState!.validate()) {
+                                            addItemFormKey.currentState!.save();
+                                            item.isChecked = false;
+                                            item.id = list.items!.length.toString();
+                                            ref.read(itemListProvider.notifier).addItemInList(
+                                                  item,
+                                                  widget.listId,
+                                                );
                                             Navigator.of(context).pop();
                                           } else {
                                             QuickAlert.show(
@@ -178,15 +207,22 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           return Scaffold(
-            floatingActionButton: ButtonWithIcon(
-              buttonText: "Adicionar",
-              height: 40,
-              width: 120,
-              borderRadius: 10,
-              onTap: () => showModal(palette, ItemList(name: "create", alteredIn: DateTime.now())),
-              icon: Icons.add,
-            ),
             backgroundColor: palette.backgroundColor,
+            persistentFooterButtons: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ButtonWithIcon(
+                    buttonText: "Adicionar Item",
+                    height: 40,
+                    width: 300,
+                    borderRadius: 10,
+                    onTap: () => showModal(palette),
+                    icon: Icons.add,
+                  ),
+                ],
+              ),
+            ],
             body: LayoutBuilder(
               builder: (context, constraints) {
                 return SizedBox(
@@ -194,57 +230,44 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: constraints.maxWidth,
                   child: SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Header(
                           constraints: constraints,
-                          text: "Olá, Usuário",
-                          secondText: UtilsMethods.capatalize(
-                            UtilsMethods.getCorrectDate(
-                              DateTime.now(),
-                            ),
-                          ),
+                          text: list.name!,
+                          secondText: "Ultima Alteração: ${DateFormat('dd/MM/yyyy').format(list.alteredIn)}",
+                          hasBackArrow: true,
                         ),
-                        const SizedBox(height: 50),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "Suas Listas",
-                                style: TextStyle(
-                                  color: palette.titleColor,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              ...List.generate(
-                                listProvider.length,
-                                (index) {
-                                  ItemList list = listProvider[index];
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
-                                        child: CustomListTile(
-                                          constraints: constraints,
-                                          list: list.name!,
-                                          details: list.details!,
-                                          alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                          delete: () => ref.read(itemListProvider.notifier).removeItem(list.itemId),
-                                          edit: () => showModal(palette, list),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                    ],
-                                  );
-                                },
-                              ),
-                              const SizedBox(height: 50),
-                            ],
-                          ),
+                        const SizedBox(height: 20),
+                        ...List.generate(
+                          list.items!.length,
+                          (index) {
+                            Item item = list.items![index];
+
+                            return Column(
+                              children: [
+                                ItemTile(
+                                    constraints: constraints,
+                                    list: item.isChecked!.toString(),
+                                    details: "${item.quantity} ${item.measurementUnity}",
+                                    index: (index + 1).toString(),
+                                    isChecked: item.isChecked!,
+                                    onTap: () {
+                                      if (!item.isChecked!) {
+                                        ref.read(itemListProvider.notifier).checkItemInList(
+                                              item.id!,
+                                              widget.listId,
+                                            );
+                                      } else {
+                                        ref.read(itemListProvider.notifier).removeItemInList(
+                                              item.id!,
+                                              widget.listId,
+                                            );
+                                      }
+                                    }),
+                                const SizedBox(height: 20),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),

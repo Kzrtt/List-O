@@ -5,29 +5,29 @@ import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/widgets/miniButton.dart';
 
-class CustomListTile extends StatefulWidget {
+class ItemTile extends StatefulWidget {
   BoxConstraints constraints;
   String list;
   String details;
-  String alteredIn;
-  void Function() delete;
-  void Function() edit;
+  String index;
+  void Function()? onTap;
+  bool isChecked;
 
-  CustomListTile({
+  ItemTile({
     super.key,
     required this.constraints,
     required this.list,
     required this.details,
-    required this.alteredIn,
-    required this.delete,
-    required this.edit,
+    required this.index,
+    required this.onTap,
+    required this.isChecked,
   });
 
   @override
-  State<CustomListTile> createState() => _CustomListTileState();
+  State<ItemTile> createState() => _ItemTileState();
 }
 
-class _CustomListTileState extends State<CustomListTile> {
+class _ItemTileState extends State<ItemTile> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -41,7 +41,7 @@ class _CustomListTileState extends State<CustomListTile> {
             borderRadius: const BorderRadius.all(
               Radius.circular(10),
             ),
-            color: palette.tileColor,
+            color: widget.isChecked ? AppPalette.disabledColor.tileColor : palette.tileColor,
           ),
           child: Row(
             children: [
@@ -57,13 +57,16 @@ class _CustomListTileState extends State<CustomListTile> {
                       borderRadius: const BorderRadius.all(
                         Radius.circular(5),
                       ),
-                      color: palette.titleColor.withOpacity(.8),
+                      color: widget.isChecked ? AppPalette.disabledColor.titleColor.withOpacity(.8) : palette.titleColor.withOpacity(.8),
                     ),
                     child: Center(
-                      child: Icon(
-                        Icons.shopping_cart,
-                        size: 40,
-                        color: palette.buttonColor,
+                      child: Text(
+                        widget.index,
+                        style: TextStyle(
+                          color: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
+                          fontSize: 40,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
@@ -72,7 +75,7 @@ class _CustomListTileState extends State<CustomListTile> {
               //? Container textos
               SizedBox(
                 height: 80,
-                width: widget.constraints.maxWidth * .45,
+                width: widget.constraints.maxWidth * .56,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +83,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     Text(
                       widget.list,
                       style: TextStyle(
-                        color: palette.titleColor,
+                        color: widget.isChecked ? AppPalette.disabledColor.titleColor : palette.titleColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -88,18 +91,9 @@ class _CustomListTileState extends State<CustomListTile> {
                     Text(
                       widget.details,
                       style: TextStyle(
-                        color: palette.subTitleColor,
+                        color: widget.isChecked ? AppPalette.disabledColor.subTitleColor : palette.subTitleColor,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      "Alterado em: ${widget.alteredIn}",
-                      style: TextStyle(
-                        color: palette.titleColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
@@ -108,23 +102,17 @@ class _CustomListTileState extends State<CustomListTile> {
               //? Container Botões
               SizedBox(
                 height: 80,
-                width: widget.constraints.maxWidth * .25,
+                width: widget.constraints.maxWidth * .14,
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.only(right: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       MiniButton(
-                        onTap: () => widget.delete(),
-                        icon: Icons.delete,
-                        buttonColor: palette.buttonColor,
-                        titleColor: palette.titleColor,
-                      ),
-                      MiniButton(
-                        onTap: () => widget.edit(),
-                        icon: Icons.edit,
-                        buttonColor: palette.buttonColor,
-                        titleColor: palette.titleColor,
+                        onTap: () => widget.onTap!(),
+                        icon: widget.isChecked ? Icons.delete : Icons.check,
+                        buttonColor: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
+                        titleColor: widget.isChecked ? AppPalette.disabledColor.titleColor : palette.titleColor,
                       ),
                     ],
                   ),
