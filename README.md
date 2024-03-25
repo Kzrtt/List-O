@@ -1,16 +1,24 @@
-# prj_list_app
+# Listo
 
-A new Flutter project.
+Aplicativo para fazer listas.
 
-## Getting Started
+## Funcionalidade Principal
 
-This project is a starting point for a Flutter application.
+Criação de listas salvando na memoria do telefone.
 
-A few resources to get you started if this is your first Flutter project:
+## Porque foi feito?
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Projeto criado com a intenção conhecer melhor as seguintes bibliotecas do flutter:
+- Riverpod
+- GoRoutes
+- Lottie
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Além disso esse projeto surge para resolver um problema que encontrei recentemente
+onde a maioria dos apps simples de listagem como este possuem uma interface muito
+"feia".
+
+Pretendo melhorar o app com o tempo e adicionar funcionalidades interessantes e que 
+ajudam muito o usuário na minha perspectiva.
+
+Com esse problema em mente e a vontade de melhorar meus conhecimentos em algumas
+bibliotecas do flutter decidi programar esse App.
