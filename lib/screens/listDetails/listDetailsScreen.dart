@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/models/List.dart';
+import 'package:prj_list_app/screens/finishedPage.dart';
 import 'package:prj_list_app/utils/validators.dart';
 import 'package:prj_list_app/widgets/buttonWithIcon.dart';
 import 'package:prj_list_app/widgets/header.dart';
@@ -28,6 +31,15 @@ class ListDetailsScreen extends StatefulWidget {
 
 class _ListDetailsScreenState extends State<ListDetailsScreen> {
   final addItemFormKey = GlobalKey<FormState>();
+
+  void showTransparentPage(BuildContext context) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false, // Importante para a transparência
+        pageBuilder: (BuildContext context, _, __) => const FinishedPage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,37 +250,74 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                           hasBackArrow: true,
                         ),
                         const SizedBox(height: 20),
-                        ...List.generate(
-                          list.items!.length,
-                          (index) {
-                            Item item = list.items![index];
+                        list.items!.isNotEmpty
+                            ? Wrap(
+                                children: [
+                                  SizedBox(
+                                    width: constraints.maxWidth,
+                                    child: Column(
+                                      children: List.generate(
+                                        list.items!.length,
+                                        (index) {
+                                          Item item = list.items![index];
 
-                            return Column(
-                              children: [
-                                ItemTile(
-                                    constraints: constraints,
-                                    list: item.name!,
-                                    details: "${item.quantity} ${item.measurementUnity}",
-                                    index: (index + 1).toString(),
-                                    isChecked: item.isChecked!,
-                                    onTap: () {
-                                      if (!item.isChecked!) {
-                                        ref.read(itemListProvider.notifier).checkItemInList(
-                                              item.id!,
-                                              widget.listId,
-                                            );
-                                      } else {
-                                        ref.read(itemListProvider.notifier).removeItemInList(
-                                              item.id!,
-                                              widget.listId,
-                                            );
-                                      }
-                                    }),
-                                const SizedBox(height: 20),
-                              ],
-                            );
-                          },
-                        ),
+                                          return Column(
+                                            children: [
+                                              ItemTile(
+                                                constraints: constraints,
+                                                list: item.name!,
+                                                details: "${item.quantity} ${item.measurementUnity}",
+                                                index: (index + 1).toString(),
+                                                isChecked: item.isChecked!,
+                                                onTap1: () => ref.read(itemListProvider.notifier).recheckItemInList(
+                                                      item.id!,
+                                                      widget.listId,
+                                                    ),
+                                                onTap2: () async {
+                                                  if (!item.isChecked!) {
+                                                    await ref.read(itemListProvider.notifier).checkItemInList(
+                                                          item.id!,
+                                                          widget.listId,
+                                                        );
+                                                    bool isAllChecked = true;
+                                                    for (var element in list.items!) {
+                                                      if (!element.isChecked!) {
+                                                        isAllChecked = false;
+                                                      }
+                                                    }
+                                                    if (isAllChecked) {
+                                                      showTransparentPage(context);
+                                                    }
+                                                    print(isAllChecked);
+                                                  } else {
+                                                    ref.read(itemListProvider.notifier).removeItemInList(
+                                                          item.id!,
+                                                          widget.listId,
+                                                        );
+                                                  }
+                                                },
+                                              ),
+                                              const SizedBox(height: 20),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(top: 90),
+                                child: SizedBox(
+                                  height: 250,
+                                  width: constraints.maxWidth,
+                                  child: SvgPicture.asset(
+                                    palette.shoppingListImage!,
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.center,
+                                  ),
+                                ),
+                              ),
                       ],
                     ),
                   ),

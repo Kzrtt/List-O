@@ -10,6 +10,7 @@ class CustomListTile extends StatefulWidget {
   String list;
   String details;
   String alteredIn;
+  bool isFinished;
   void Function() delete;
   void Function() edit;
 
@@ -20,6 +21,7 @@ class CustomListTile extends StatefulWidget {
     required this.details,
     required this.alteredIn,
     required this.delete,
+    required this.isFinished,
     required this.edit,
   });
 
@@ -41,7 +43,7 @@ class _CustomListTileState extends State<CustomListTile> {
             borderRadius: const BorderRadius.all(
               Radius.circular(10),
             ),
-            color: palette.tileColor,
+            color: widget.isFinished ? AppPalette.disabledColor.tileColor : palette.tileColor,
           ),
           child: Row(
             children: [
@@ -57,13 +59,13 @@ class _CustomListTileState extends State<CustomListTile> {
                       borderRadius: const BorderRadius.all(
                         Radius.circular(5),
                       ),
-                      color: palette.titleColor.withOpacity(.8),
+                      color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor.withOpacity(.8),
                     ),
                     child: Center(
                       child: Icon(
                         Icons.shopping_cart,
                         size: 40,
-                        color: palette.buttonColor,
+                        color: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
                       ),
                     ),
                   ),
@@ -80,7 +82,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     Text(
                       widget.list,
                       style: TextStyle(
-                        color: palette.titleColor,
+                        color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -88,7 +90,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     Text(
                       widget.details,
                       style: TextStyle(
-                        color: palette.subTitleColor,
+                        color: widget.isFinished ? AppPalette.disabledColor.subTitleColor : palette.subTitleColor,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -97,7 +99,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     Text(
                       "Alterado em: ${widget.alteredIn}",
                       style: TextStyle(
-                        color: palette.titleColor,
+                        color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -117,14 +119,14 @@ class _CustomListTileState extends State<CustomListTile> {
                       MiniButton(
                         onTap: () => widget.delete(),
                         icon: Icons.delete,
-                        buttonColor: palette.buttonColor,
-                        titleColor: palette.titleColor,
+                        buttonColor: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
+                        titleColor: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
                       ),
                       MiniButton(
                         onTap: () => widget.edit(),
                         icon: Icons.edit,
-                        buttonColor: palette.buttonColor,
-                        titleColor: palette.titleColor,
+                        buttonColor: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
+                        titleColor: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
                       ),
                     ],
                   ),

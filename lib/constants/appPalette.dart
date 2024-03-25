@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
@@ -10,6 +12,8 @@ enum AppPalette {
     buttonColor: Color.fromRGBO(126, 233, 117, 1),
     tileColor: Color.fromRGBO(228, 255, 225, 1),
     icon: Icons.brightness_3_outlined,
+    homePageImage: "assets/lightHomePage.svg",
+    shoppingListImage: "assets/lightShoppingList.svg",
   ),
   darkColorPalette(
     backgroundColor: Color.fromRGBO(207, 207, 207, 1),
@@ -18,6 +22,8 @@ enum AppPalette {
     buttonColor: Color.fromRGBO(170, 102, 217, 1),
     tileColor: Color.fromRGBO(201, 165, 226, 1),
     icon: Icons.light_mode_outlined,
+    homePageImage: "assets/darkHomePage.svg",
+    shoppingListImage: "assets/darkShoppingList.svg",
   ),
   disabledColor(
     backgroundColor: Color.fromRGBO(207, 207, 207, 1),
@@ -35,6 +41,8 @@ enum AppPalette {
     required this.buttonColor,
     required this.tileColor,
     required this.icon,
+    this.homePageImage = "",
+    this.shoppingListImage = "",
   });
 
   final Color backgroundColor;
@@ -43,4 +51,6 @@ enum AppPalette {
   final Color buttonColor;
   final Color tileColor;
   final IconData icon;
+  final String? homePageImage;
+  final String? shoppingListImage;
 }

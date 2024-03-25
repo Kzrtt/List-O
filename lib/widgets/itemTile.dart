@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
@@ -10,7 +12,8 @@ class ItemTile extends StatefulWidget {
   String list;
   String details;
   String index;
-  void Function()? onTap;
+  void Function()? onTap1;
+  void Function()? onTap2;
   bool isChecked;
 
   ItemTile({
@@ -19,7 +22,8 @@ class ItemTile extends StatefulWidget {
     required this.list,
     required this.details,
     required this.index,
-    required this.onTap,
+    required this.onTap1,
+    required this.onTap2,
     required this.isChecked,
   });
 
@@ -75,7 +79,7 @@ class _ItemTileState extends State<ItemTile> {
               //? Container textos
               SizedBox(
                 height: 80,
-                width: widget.constraints.maxWidth * .56,
+                width: widget.constraints.maxWidth * .44,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -102,14 +106,22 @@ class _ItemTileState extends State<ItemTile> {
               //? Container Botões
               SizedBox(
                 height: 80,
-                width: widget.constraints.maxWidth * .14,
+                width: widget.constraints.maxWidth * .26,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 5),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      widget.isChecked
+                          ? MiniButton(
+                              onTap: () => widget.onTap1!(),
+                              icon: Icons.refresh,
+                              buttonColor: AppPalette.disabledColor.buttonColor,
+                              titleColor: AppPalette.disabledColor.titleColor,
+                            )
+                          : const Center(),
                       MiniButton(
-                        onTap: () => widget.onTap!(),
+                        onTap: () => widget.onTap2!(),
                         icon: widget.isChecked ? Icons.delete : Icons.check,
                         buttonColor: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
                         titleColor: widget.isChecked ? AppPalette.disabledColor.titleColor : palette.titleColor,

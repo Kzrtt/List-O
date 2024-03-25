@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
@@ -220,28 +221,105 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              ...List.generate(
-                                listProvider.length,
-                                (index) {
-                                  ItemList list = listProvider[index];
-                                  return Column(
-                                    children: [
-                                      InkWell(
-                                        onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
-                                        child: CustomListTile(
-                                          constraints: constraints,
-                                          list: list.name!,
-                                          details: list.details!,
-                                          alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                          delete: () => ref.read(itemListProvider.notifier).removeItem(list.itemId),
-                                          edit: () => showModal(palette, list),
+                              listProvider.isNotEmpty
+                                  ? Wrap(
+                                      children: [
+                                        SizedBox(
+                                          child: Column(
+                                            children: List.generate(
+                                              listProvider.length,
+                                              (index) {
+                                                ItemList list = listProvider[index];
+                                                return !list.isFinished!
+                                                    ? Column(
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                            child: CustomListTile(
+                                                              constraints: constraints,
+                                                              list: list.name!,
+                                                              details: list.details!,
+                                                              isFinished: list.isFinished!,
+                                                              alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
+                                                              delete: () => ref.read(itemListProvider.notifier).removeItem(list.itemId),
+                                                              edit: () => showModal(palette, list),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 20),
+                                                        ],
+                                                      )
+                                                    : const Center();
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.only(top: 70),
+                                      child: SizedBox(
+                                        height: 250,
+                                        width: constraints.maxWidth,
+                                        child: SvgPicture.asset(
+                                          palette.homePageImage!,
+                                          fit: BoxFit.contain,
+                                          alignment: Alignment.center,
                                         ),
                                       ),
-                                      const SizedBox(height: 20),
-                                    ],
-                                  );
-                                },
-                              ),
+                                    ),
+                              listProvider.any((element) => element.isFinished!)
+                                  ? Column(
+                                      children: [
+                                        const SizedBox(height: 20),
+                                        const Divider(endIndent: 50, indent: 50),
+                                        const SizedBox(height: 20),
+                                        Text(
+                                          "Recentemente Finalizadas",
+                                          style: TextStyle(
+                                            color: AppPalette.disabledColor.titleColor,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : const Center(),
+                              const SizedBox(height: 20),
+                              listProvider.isNotEmpty
+                                  ? Wrap(
+                                      children: [
+                                        SizedBox(
+                                          child: Column(
+                                            children: List.generate(
+                                              listProvider.length,
+                                              (index) {
+                                                ItemList list = listProvider[index];
+                                                return list.isFinished!
+                                                    ? Column(
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                            child: CustomListTile(
+                                                              constraints: constraints,
+                                                              list: list.name!,
+                                                              details: list.details!,
+                                                              isFinished: list.isFinished!,
+                                                              alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
+                                                              delete: () => ref.read(itemListProvider.notifier).removeItem(list.itemId),
+                                                              edit: () => showModal(palette, list),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 20),
+                                                        ],
+                                                      )
+                                                    : const Center();
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : const Center(),
                               const SizedBox(height: 50),
                             ],
                           ),

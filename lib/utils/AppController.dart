@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/models/List.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppController with ChangeNotifier {
   static AppController? _instance;
@@ -8,7 +9,7 @@ class AppController with ChangeNotifier {
   //? Variaveis do App
   List<ItemList> lists = [];
 
-  //late SharedPreferences preferences;
+  late SharedPreferences preferences;
 
   AppController._internal();
 
