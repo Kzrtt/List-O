@@ -1,3 +1,6 @@
+![Linguagem mais utilizada](https://img.shields.io/github/languages/top/Kzrtt/prj_list_app)
+![Último commit](https://img.shields.io/github/last-commit/Kzrtt/prj_list_app)
+
 # Listo
 
 Aplicativo para fazer listas.
