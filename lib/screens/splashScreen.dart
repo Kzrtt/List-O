@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:prj_list_app/constants/prefsConstantes.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/AppPreferences.dart';
 
 import '../models/List.dart';
@@ -31,9 +32,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     List<String> items = await prefs.getStringList(PrefsContants.itemList);
     List<ItemList> prefsItemList = items.map((e) => ItemList.fromJson(jsonDecode(e))).toList();
+    String palette = await prefs.getStringItem(PrefsContants.preferredColor);
     for (var element in prefsItemList) {
       print(element.name);
     }
+
+    print("palette: $palette");
+    ref.read(themeProvider.notifier).selectTheme(
+          int.parse(palette),
+          context,
+          'N',
+        );
     ref.read(itemListProvider.notifier).setItems(prefsItemList);
 
     Future.delayed(const Duration(seconds: 2)).then((value) => GoRouter.of(context).push('/homeScreen'));
@@ -56,20 +65,30 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        height: 200,
-                        width: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(100),
+                      InkWell(
+                        onTap: () {
+                          if (AppController.instance.isDebug) {
+                            AppPreferences preferences = AppPreferences();
+                            preferences.removeItem(PrefsContants.itemList);
+                            preferences.removeItem(PrefsContants.preferredColor);
+                            print("@#@#@#@#@##@#@");
+                          }
+                        },
+                        child: Container(
+                          height: 200,
+                          width: 200,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(100),
+                            ),
+                            color: palette.titleColor,
                           ),
-                          color: palette.titleColor,
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.shopping_cart_outlined,
-                            color: palette.tileColor,
-                            size: 100,
+                          child: Center(
+                            child: Icon(
+                              Icons.shopping_cart_outlined,
+                              color: palette.tileColor,
+                              size: 100,
+                            ),
                           ),
                         ),
                       ),

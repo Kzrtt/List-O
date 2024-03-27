@@ -3,20 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
+import 'package:prj_list_app/widgets/selectColor.dart';
 
 class Header extends StatelessWidget {
   BoxConstraints constraints;
   String text;
   String secondText;
   bool? hasBackArrow;
+  void Function()? menuTap;
 
   Header({
     super.key,
     required this.constraints,
     required this.text,
     required this.secondText,
+    required this.menuTap,
     this.hasBackArrow = false,
   });
+
+  void showTransparentPage(BuildContext context) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false, // Importante para a transparência
+        pageBuilder: (BuildContext context, _, __) => const SelectColor(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,14 +73,14 @@ class Header extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(right: 15),
                             child: InkWell(
-                              onTap: () => ref.read(themeProvider.notifier).toggleTheme(),
+                              onTap: () => showTransparentPage(context),
                               child: SizedBox(
                                 width: 60,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Icon(
-                                      palette.icon,
+                                      Icons.palette_outlined,
                                       color: palette.titleColor,
                                       size: 30,
                                     ),
@@ -83,7 +95,7 @@ class Header extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 15),
                         child: InkWell(
-                          onTap: () {},
+                          onTap: menuTap,
                           child: SizedBox(
                             width: 60,
                             child: Row(

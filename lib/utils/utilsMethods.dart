@@ -1,5 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:prj_list_app/constants/appPalette.dart';
+import 'package:prj_list_app/constants/prefsConstantes.dart';
+import 'package:prj_list_app/utils/AppPreferences.dart';
+import 'package:prj_list_app/widgets/editOptionTile.dart';
 
 class UtilsMethods {
   static String getCorrectDate(DateTime date) {
@@ -24,5 +30,94 @@ class UtilsMethods {
     }).join(' ');
 
     return capitalized;
+  }
+
+  static bool isYesterdayOrToday(DateTime dateToCheck) {
+    DateTime now = DateTime.now();
+    // Normalizando 'now' para meia-noite de hoje
+    DateTime today = DateTime(now.year, now.month, now.day);
+    DateTime yesterday = today.subtract(const Duration(days: 1));
+
+    // Verificando se a data para checagem é ontem ou hoje
+    bool isToday = dateToCheck.year == today.year && dateToCheck.month == today.month && dateToCheck.day == today.day;
+    bool isYesterday = dateToCheck.year == yesterday.year && dateToCheck.month == yesterday.month && dateToCheck.day == yesterday.day;
+
+    return isYesterday || isToday;
+  }
+
+  static void showOptionsModal(BuildContext context, BoxConstraints constraints, AppPalette palette) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 600,
+          width: constraints.maxWidth,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
+            ),
+            color: palette.backgroundColor,
+          ),
+          child: Column(
+            children: [
+              Container(
+                height: 150,
+                width: constraints.maxWidth,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
+                  color: palette.titleColor.withOpacity(.8),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.person_outline,
+                    color: palette.tileColor,
+                    size: 100,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () => GoRouter.of(context).push("/oldLists"),
+                      child: EditOptionButton(
+                        constraints: constraints,
+                        title: "Listas Antigas",
+                        content: "Reveja suas listas antigas",
+                        icon: Icons.history_outlined,
+                        color: palette.titleColor,
+                        iconColor: palette.tileColor,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () {
+                        AppPreferences prefs = AppPreferences();
+                        prefs.removeItem(PrefsContants.itemList);
+                        prefs.removeItem(PrefsContants.preferredColor);
+                        GoRouter.of(context).pushReplacementNamed('/');
+                      },
+                      child: EditOptionButton(
+                        constraints: constraints,
+                        title: "Limpar Listas",
+                        content: "Isso fará você perder as listas",
+                        icon: Icons.delete_forever_outlined,
+                        color: palette.titleColor,
+                        iconColor: palette.tileColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

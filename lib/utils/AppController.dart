@@ -8,6 +8,7 @@ class AppController with ChangeNotifier {
 
   //? Variaveis do App
   List<ItemList> lists = [];
+  bool isDebug = false;
 
   late SharedPreferences preferences;
 

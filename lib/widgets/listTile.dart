@@ -13,6 +13,7 @@ class CustomListTile extends StatefulWidget {
   bool isFinished;
   void Function() delete;
   void Function() edit;
+  String text;
 
   CustomListTile({
     super.key,
@@ -23,6 +24,7 @@ class CustomListTile extends StatefulWidget {
     required this.delete,
     required this.isFinished,
     required this.edit,
+    required this.text,
   });
 
   @override
@@ -97,7 +99,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      "Alterado em: ${widget.alteredIn}",
+                      "${widget.text}: ${widget.alteredIn}",
                       style: TextStyle(
                         color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
                         fontSize: 12,

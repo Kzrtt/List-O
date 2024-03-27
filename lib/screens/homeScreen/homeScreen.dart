@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           final listProvider = ref.watch(itemListProvider).value;
 
           showModal(AppPalette palette, ItemList listParam) {
-            ItemList list = ItemList(alteredIn: DateTime.now());
+            ItemList list = ItemList(alteredIn: DateTime.now(), finishedIn: DateTime.now());
 
             showModalBottomSheet(
               context: context,
@@ -184,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 40,
               width: 120,
               borderRadius: 10,
-              onTap: () => showModal(palette, ItemList(name: "create", alteredIn: DateTime.now())),
+              onTap: () => showModal(palette, ItemList(name: "create", alteredIn: DateTime.now(), finishedIn: DateTime.now())),
               icon: Icons.add,
             ),
             backgroundColor: palette.backgroundColor,
@@ -204,6 +204,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             UtilsMethods.getCorrectDate(
                               DateTime.now(),
                             ),
+                          ),
+                          menuTap: () => UtilsMethods.showOptionsModal(
+                            context,
+                            constraints,
+                            palette,
                           ),
                         ),
                         const SizedBox(height: 50),
@@ -240,8 +245,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               list: list.name!,
                                                               details: list.details!,
                                                               isFinished: list.isFinished!,
+                                                              text: 'Alterado em',
                                                               alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                                              delete: () => ref.read(itemListProvider.notifier).removeItem(list.itemId),
+                                                              delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                                    list.itemId,
+                                                                    context,
+                                                                  ),
                                                               edit: () => showModal(palette, list),
                                                             ),
                                                           ),
@@ -267,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                       ),
                                     ),
-                              listProvider.any((element) => element.isFinished!)
+                              listProvider.any((element) => element.isFinished! && UtilsMethods.isYesterdayOrToday(element.finishedIn))
                                   ? Column(
                                       children: [
                                         const SizedBox(height: 20),
@@ -285,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     )
                                   : const Center(),
                               const SizedBox(height: 20),
-                              listProvider.isNotEmpty
+                              listProvider.isNotEmpty && listProvider.any((element) => element.isFinished! && UtilsMethods.isYesterdayOrToday(element.finishedIn))
                                   ? Wrap(
                                       children: [
                                         SizedBox(
@@ -294,7 +303,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               listProvider.length,
                                               (index) {
                                                 ItemList list = listProvider[index];
-                                                return list.isFinished!
+                                                return list.isFinished! && UtilsMethods.isYesterdayOrToday(list.finishedIn)
                                                     ? Column(
                                                         children: [
                                                           InkWell(
@@ -304,8 +313,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               list: list.name!,
                                                               details: list.details!,
                                                               isFinished: list.isFinished!,
+                                                              text: "Alterado em",
                                                               alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                                              delete: () => ref.read(itemListProvider.notifier).removeItem(list.itemId),
+                                                              delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                                    list.itemId,
+                                                                    context,
+                                                                  ),
                                                               edit: () => showModal(palette, list),
                                                             ),
                                                           ),

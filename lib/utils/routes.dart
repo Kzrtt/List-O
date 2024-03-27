@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prj_list_app/screens/homeScreen/homeScreen.dart';
-import 'package:prj_list_app/screens/listDetails/listDetailsScreen.dart';
+import 'package:prj_list_app/screens/listDetailsScreen/listDetailsScreen.dart';
+import 'package:prj_list_app/screens/oldListScreen/oldListsScreen.dart';
 import 'package:prj_list_app/screens/splashScreen.dart';
 
 final routes = GoRouter(
@@ -28,6 +29,15 @@ final routes = GoRouter(
           child: ListDetailsScreen(
             listId: listId!,
           ),
+          fullscreenDialog: true,
+        );
+      },
+    ),
+    GoRoute(
+      path: "/oldLists",
+      pageBuilder: (context, state) {
+        return const MaterialPage(
+          child: OldListScreen(),
           fullscreenDialog: true,
         );
       },

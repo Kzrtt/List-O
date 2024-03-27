@@ -5,6 +5,7 @@ class ItemList {
   DateTime alteredIn;
   bool? isFinished;
   List<Item>? items;
+  DateTime finishedIn;
 
   ItemList({
     this.itemId = "",
@@ -12,6 +13,7 @@ class ItemList {
     this.details = "",
     this.isFinished = false,
     required this.alteredIn,
+    required this.finishedIn,
     this.items = const [],
   });
 
@@ -23,6 +25,7 @@ class ItemList {
         'alteredIn': alteredIn.toIso8601String(),
         'isFinished': isFinished,
         'items': items?.map((item) => item.toJson()).toList(),
+        'finishedIn': finishedIn.toIso8601String(),
       };
 
   // Cria um ItemList a partir de um Map.
@@ -33,6 +36,7 @@ class ItemList {
         alteredIn: DateTime.parse(json['alteredIn']),
         isFinished: json['isFinished'],
         items: json['items'] != null ? List<Item>.from(json['items'].map((item) => Item.fromJson(item))) : [],
+        finishedIn: DateTime.parse(json['finishedIn']),
       );
 }
 

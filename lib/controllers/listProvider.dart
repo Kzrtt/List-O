@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/constants/prefsConstantes.dart';
 import 'package:prj_list_app/models/List.dart';
 import 'package:prj_list_app/utils/AppPreferences.dart';
+import 'package:quickalert/quickalert.dart';
 
 final itemListProvider = ChangeNotifierProvider(
   (ref) => ListNotifier(),
@@ -67,6 +69,8 @@ class ListNotifier extends ValueNotifier<List<ItemList>> {
       if (isAllChecked) {
         list.isFinished = true;
         prefsList.isFinished = true;
+        list.finishedIn = DateTime.now();
+        prefsList.finishedIn = DateTime.now();
       }
     } else {
       print("Lista não encontrada");
@@ -158,11 +162,29 @@ class ListNotifier extends ValueNotifier<List<ItemList>> {
     value = [...value, itemList];
   }
 
-  Future<void> removeItem(String itemId) async {
-    List<ItemList> prefsItemList = await getPrefsItemList();
-    value = value.where((element) => element.itemId != itemId).toList();
-    prefsItemList = prefsItemList.where((element) => element.itemId != itemId).toList();
-    setPrefsItemList(prefsItemList);
+  Future<void> removeItem(String itemId, BuildContext context) async {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.confirm,
+      confirmBtnText: "Deletar",
+      cancelBtnText: "Cancelar",
+      title: "Tem Certeza!?",
+      text: "Deseja mesmo remover essa lista?",
+      confirmBtnColor: AppPalette.redColorPalette.buttonColor,
+      confirmBtnTextStyle: TextStyle(
+        color: AppPalette.redColorPalette.titleColor,
+        fontWeight: FontWeight.w600,
+        fontSize: 16,
+      ),
+      showConfirmBtn: true,
+      onConfirmBtnTap: () async {
+        List<ItemList> prefsItemList = await getPrefsItemList();
+        value = value.where((element) => element.itemId != itemId).toList();
+        prefsItemList = prefsItemList.where((element) => element.itemId != itemId).toList();
+        setPrefsItemList(prefsItemList);
+      },
+      onCancelBtnTap: () => Navigator.of(context).pop(),
+    );
   }
 
   ItemList findList(String listId) {
