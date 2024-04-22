@@ -38,7 +38,7 @@ final class ThemeProvider extends ValueNotifier<AppPalette> {
       default:
     }
     if (pop == 'S') {
-      Navigator.of(context).pop();
+      Navigator.of(context).popUntil((route) => route.settings.name == "/homeScreen");
     }
   }
 }

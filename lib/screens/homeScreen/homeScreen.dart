@@ -7,12 +7,14 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
+import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/models/List.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/utils/validators.dart';
 import 'package:prj_list_app/widgets/buttonWithIcon.dart';
+import 'package:prj_list_app/widgets/gridTile.dart';
 import 'package:prj_list_app/widgets/header.dart';
 import 'package:prj_list_app/widgets/listTile.dart';
 import 'package:prj_list_app/widgets/miniButton.dart';
@@ -35,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Consumer(
         builder: (context, ref, child) {
           final palette = ref.watch(themeProvider).value;
+          final orientation = ref.watch(orientationProvider).value;
           final listProvider = ref.watch(itemListProvider).value;
 
           showModal(AppPalette palette, ItemList listParam) {
@@ -227,43 +230,81 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const SizedBox(height: 20),
                               listProvider.isNotEmpty
-                                  ? Wrap(
-                                      children: [
-                                        SizedBox(
-                                          child: Column(
-                                            children: List.generate(
-                                              listProvider.length,
-                                              (index) {
+                                  ? orientation == "list"
+                                      ? Wrap(
+                                          children: [
+                                            SizedBox(
+                                              child: Column(
+                                                children: List.generate(
+                                                  listProvider.length,
+                                                  (index) {
+                                                    ItemList list = listProvider[index];
+                                                    return !list.isFinished!
+                                                        ? Column(
+                                                            children: [
+                                                              InkWell(
+                                                                onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                                child: CustomListTile(
+                                                                  constraints: constraints,
+                                                                  list: list.name!,
+                                                                  details: list.details!,
+                                                                  isFinished: list.isFinished!,
+                                                                  text: 'Alterado em',
+                                                                  alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
+                                                                  delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                                        list.itemId,
+                                                                        context,
+                                                                      ),
+                                                                  edit: () => showModal(palette, list),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 20),
+                                                            ],
+                                                          )
+                                                        : const Center();
+                                                  },
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : SizedBox(
+                                          height: (listProvider.length / 2) * 300,
+                                          width: constraints.maxWidth * .95,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 20),
+                                            child: GridView.builder(
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              shrinkWrap: true,
+                                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                crossAxisSpacing: 20.0,
+                                                mainAxisSpacing: 20.0,
+                                              ),
+                                              itemCount: listProvider.length,
+                                              itemBuilder: (context, index) {
                                                 ItemList list = listProvider[index];
-                                                return !list.isFinished!
-                                                    ? Column(
-                                                        children: [
-                                                          InkWell(
-                                                            onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
-                                                            child: CustomListTile(
-                                                              constraints: constraints,
-                                                              list: list.name!,
-                                                              details: list.details!,
-                                                              isFinished: list.isFinished!,
-                                                              text: 'Alterado em',
-                                                              alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                                              delete: () => ref.read(itemListProvider.notifier).removeItem(
-                                                                    list.itemId,
-                                                                    context,
-                                                                  ),
-                                                              edit: () => showModal(palette, list),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 20),
-                                                        ],
-                                                      )
-                                                    : const Center();
+
+                                                return InkWell(
+                                                  onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                  child: CustomGridTile(
+                                                    constraints: constraints,
+                                                    list: list.name!,
+                                                    details: list.details!,
+                                                    isFinished: list.isFinished!,
+                                                    text: 'Alterado em',
+                                                    alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
+                                                    delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                          list.itemId,
+                                                          context,
+                                                        ),
+                                                    edit: () => showModal(palette, list),
+                                                  ),
+                                                );
                                               },
                                             ),
                                           ),
                                         )
-                                      ],
-                                    )
                                   : Padding(
                                       padding: const EdgeInsets.only(top: 70),
                                       child: SizedBox(
@@ -277,61 +318,103 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                               listProvider.any((element) => element.isFinished! && UtilsMethods.isYesterdayOrToday(element.finishedIn))
-                                  ? Column(
-                                      children: [
-                                        const SizedBox(height: 20),
-                                        const Divider(endIndent: 50, indent: 50),
-                                        const SizedBox(height: 20),
-                                        Text(
-                                          "Recentemente Finalizadas",
-                                          style: TextStyle(
-                                            color: AppPalette.disabledColor.titleColor,
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.w600,
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(left: 20),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Divider(endIndent: 50, indent: 50),
+                                          const SizedBox(height: 20),
+                                          Text(
+                                            "Recentemente Finalizadas",
+                                            style: TextStyle(
+                                              color: AppPalette.disabledColor.titleColor,
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     )
                                   : const Center(),
                               const SizedBox(height: 20),
                               listProvider.isNotEmpty && listProvider.any((element) => element.isFinished! && UtilsMethods.isYesterdayOrToday(element.finishedIn))
-                                  ? Wrap(
-                                      children: [
-                                        SizedBox(
-                                          child: Column(
-                                            children: List.generate(
-                                              listProvider.length,
-                                              (index) {
+                                  ? orientation == "list"
+                                      ? Wrap(
+                                          children: [
+                                            SizedBox(
+                                              child: Column(
+                                                children: List.generate(
+                                                  listProvider.length,
+                                                  (index) {
+                                                    ItemList list = listProvider[index];
+                                                    return list.isFinished! && UtilsMethods.isYesterdayOrToday(list.finishedIn)
+                                                        ? Column(
+                                                            children: [
+                                                              InkWell(
+                                                                onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                                child: CustomListTile(
+                                                                  constraints: constraints,
+                                                                  list: list.name!,
+                                                                  details: list.details!,
+                                                                  isFinished: list.isFinished!,
+                                                                  text: "Alterado em",
+                                                                  alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
+                                                                  delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                                        list.itemId,
+                                                                        context,
+                                                                      ),
+                                                                  edit: () => showModal(palette, list),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 20),
+                                                            ],
+                                                          )
+                                                        : const Center();
+                                                  },
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : SizedBox(
+                                          height: (listProvider.length / 2) * 200,
+                                          width: constraints.maxWidth * .95,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 20),
+                                            child: GridView.builder(
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                crossAxisSpacing: 20.0,
+                                                mainAxisSpacing: 20.0,
+                                              ),
+                                              itemCount: listProvider.length,
+                                              itemBuilder: (context, index) {
                                                 ItemList list = listProvider[index];
+
                                                 return list.isFinished! && UtilsMethods.isYesterdayOrToday(list.finishedIn)
-                                                    ? Column(
-                                                        children: [
-                                                          InkWell(
-                                                            onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
-                                                            child: CustomListTile(
-                                                              constraints: constraints,
-                                                              list: list.name!,
-                                                              details: list.details!,
-                                                              isFinished: list.isFinished!,
-                                                              text: "Alterado em",
-                                                              alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                                              delete: () => ref.read(itemListProvider.notifier).removeItem(
-                                                                    list.itemId,
-                                                                    context,
-                                                                  ),
-                                                              edit: () => showModal(palette, list),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 20),
-                                                        ],
+                                                    ? InkWell(
+                                                        onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                        child: CustomGridTile(
+                                                          constraints: constraints,
+                                                          list: list.name!,
+                                                          details: list.details!,
+                                                          isFinished: list.isFinished!,
+                                                          text: 'Alterado em',
+                                                          alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
+                                                          delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                                list.itemId,
+                                                                context,
+                                                              ),
+                                                          edit: () => showModal(palette, list),
+                                                        ),
                                                       )
                                                     : const Center();
                                               },
                                             ),
                                           ),
                                         )
-                                      ],
-                                    )
                                   : const Center(),
                               const SizedBox(height: 50),
                             ],

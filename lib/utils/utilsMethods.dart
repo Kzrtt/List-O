@@ -51,7 +51,7 @@ class UtilsMethods {
       context: context,
       builder: (context) {
         return Container(
-          height: 600,
+          height: 700,
           width: constraints.maxWidth,
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(
@@ -107,6 +107,18 @@ class UtilsMethods {
                         title: "Limpar Listas",
                         content: "Isso fará você perder as listas",
                         icon: Icons.delete_forever_outlined,
+                        color: palette.titleColor,
+                        iconColor: palette.tileColor,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () => GoRouter.of(context).push("/palettes"),
+                      child: EditOptionButton(
+                        constraints: constraints,
+                        title: "Paletas de Cores",
+                        content: "Alterne entre os temas disponiveis no App",
+                        icon: Icons.palette_outlined,
                         color: palette.titleColor,
                         iconColor: palette.tileColor,
                       ),

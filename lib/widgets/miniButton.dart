@@ -9,6 +9,8 @@ class MiniButton extends StatelessWidget {
   IconData icon;
   Color buttonColor;
   Color titleColor;
+  double? height;
+  double? width;
 
   MiniButton({
     super.key,
@@ -16,6 +18,8 @@ class MiniButton extends StatelessWidget {
     required this.icon,
     required this.buttonColor,
     required this.titleColor,
+    this.height = 40,
+    this.width = 40,
   });
 
   @override
@@ -27,8 +31,8 @@ class MiniButton extends StatelessWidget {
         return InkWell(
           onTap: onTap,
           child: Container(
-            height: 40,
-            width: 40,
+            height: height,
+            width: width,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
                 Radius.circular(10),

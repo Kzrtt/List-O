@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/orientationProvider.dart';
@@ -6,14 +8,14 @@ import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/widgets/selectColor.dart';
 
-class Header extends StatelessWidget {
+class SimpleHeader extends StatelessWidget {
   BoxConstraints constraints;
   String text;
   String secondText;
   bool? hasBackArrow;
   void Function()? menuTap;
 
-  Header({
+  SimpleHeader({
     super.key,
     required this.constraints,
     required this.text,
@@ -44,7 +46,7 @@ class Header extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 140,
+                height: 80,
                 width: constraints.maxWidth,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 25),
@@ -72,46 +74,7 @@ class Header extends StatelessWidget {
                                   ),
                                 )
                               : const Center(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: InkWell(
-                              onTap: () => ref.read(orientationProvider.notifier).toggleOrientation(),
-                              child: SizedBox(
-                                width: 60,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Icon(
-                                      orientation == "list" ? Icons.splitscreen : Icons.grid_view_outlined,
-                                      color: palette.titleColor,
-                                      size: 30,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
-                      ),
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15),
-                        child: InkWell(
-                          onTap: menuTap,
-                          child: SizedBox(
-                            width: 60,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Icon(
-                                  Icons.person_outline,
-                                  color: palette.titleColor,
-                                  size: 30,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prj_list_app/constants/prefsConstantes.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
+import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/AppPreferences.dart';
@@ -33,11 +34,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     List<String> items = await prefs.getStringList(PrefsContants.itemList);
     List<ItemList> prefsItemList = items.map((e) => ItemList.fromJson(jsonDecode(e))).toList();
     String palette = await prefs.getStringItem(PrefsContants.preferredColor);
+    String orientation = await prefs.getStringItem(PrefsContants.preferredOrientation);
     for (var element in prefsItemList) {
       print(element.name);
     }
 
     print("palette: $palette");
+    if (palette == "") {
+      palette = "1";
+    }
+    ref.read(orientationProvider.notifier).setOrientation(orientation);
     ref.read(themeProvider.notifier).selectTheme(
           int.parse(palette),
           context,

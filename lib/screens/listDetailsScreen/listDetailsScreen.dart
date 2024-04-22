@@ -14,6 +14,7 @@ import 'package:prj_list_app/widgets/buttonWithIcon.dart';
 import 'package:prj_list_app/widgets/header.dart';
 import 'package:prj_list_app/widgets/itemTile.dart';
 import 'package:prj_list_app/widgets/listTile.dart';
+import 'package:prj_list_app/widgets/simpleHeader.dart';
 import 'package:prj_list_app/widgets/textForms.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
@@ -244,7 +245,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Header(
+                        SimpleHeader(
                           constraints: constraints,
                           text: list.name!,
                           secondText: "Ultima Alteração: ${DateFormat('dd/MM/yyyy').format(list.alteredIn)}",

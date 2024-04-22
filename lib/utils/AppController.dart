@@ -9,6 +9,7 @@ class AppController with ChangeNotifier {
   //? Variaveis do App
   List<ItemList> lists = [];
   bool isDebug = false;
+  String orientation = "list";
 
   late SharedPreferences preferences;
 
