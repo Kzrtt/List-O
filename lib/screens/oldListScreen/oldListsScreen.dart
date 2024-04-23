@@ -5,13 +5,16 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
+import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/models/List.dart';
 import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/utils/validators.dart';
 import 'package:prj_list_app/widgets/buttonWithIcon.dart';
+import 'package:prj_list_app/widgets/gridTile.dart';
 import 'package:prj_list_app/widgets/header.dart';
 import 'package:prj_list_app/widgets/listTile.dart';
+import 'package:prj_list_app/widgets/simpleHeader.dart';
 import 'package:prj_list_app/widgets/textForms.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
@@ -33,6 +36,7 @@ class _OldListScreenState extends State<OldListScreen> {
         builder: (context, ref, child) {
           final palette = ref.watch(themeProvider).value;
           final listProvider = ref.watch(itemListProvider).value;
+          final orientation = ref.watch(orientationProvider).value;
 
           showModal(AppPalette palette, ItemList listParam) {
             ItemList list = ItemList(alteredIn: DateTime.now(), finishedIn: DateTime.now());
@@ -184,7 +188,8 @@ class _OldListScreenState extends State<OldListScreen> {
                   width: constraints.maxWidth,
                   child: Column(
                     children: [
-                      Header(
+                      SimpleHeader(
+                        headerTitle: "Listas Antigas",
                         constraints: constraints,
                         text: "Listas Antigas",
                         secondText: UtilsMethods.capatalize(
@@ -201,43 +206,80 @@ class _OldListScreenState extends State<OldListScreen> {
                       ),
                       const SizedBox(height: 20),
                       listProvider.isNotEmpty && listProvider.any((element) => element.isFinished! && !UtilsMethods.isYesterdayOrToday(element.finishedIn))
-                          ? Wrap(
-                              children: [
-                                SizedBox(
-                                  child: Column(
-                                    children: List.generate(
-                                      listProvider.length,
-                                      (index) {
+                          ? orientation == "list"
+                              ? Wrap(
+                                  children: [
+                                    SizedBox(
+                                      child: Column(
+                                        children: List.generate(
+                                          listProvider.length,
+                                          (index) {
+                                            ItemList list = listProvider[index];
+                                            return list.isFinished! && !UtilsMethods.isYesterdayOrToday(list.finishedIn)
+                                                ? Column(
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                        child: CustomListTile(
+                                                          constraints: constraints,
+                                                          list: list.name!,
+                                                          details: list.details!,
+                                                          isFinished: list.isFinished!,
+                                                          text: "Finalizado em:",
+                                                          alteredIn: DateFormat('dd/MM/yyyy').format(list.finishedIn),
+                                                          delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                                list.itemId,
+                                                                context,
+                                                              ),
+                                                          edit: () => showModal(palette, list),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 20),
+                                                    ],
+                                                  )
+                                                : const Center();
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : SizedBox(
+                                  width: constraints.maxWidth * .95,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: GridView.builder(
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 20.0,
+                                        mainAxisSpacing: 20.0,
+                                      ),
+                                      itemCount: listProvider.length,
+                                      itemBuilder: (context, index) {
                                         ItemList list = listProvider[index];
-                                        return list.isFinished! && !UtilsMethods.isYesterdayOrToday(list.finishedIn)
-                                            ? Column(
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
-                                                    child: CustomListTile(
-                                                      constraints: constraints,
-                                                      list: list.name!,
-                                                      details: list.details!,
-                                                      isFinished: list.isFinished!,
-                                                      text: "Finalizado em:",
-                                                      alteredIn: DateFormat('dd/MM/yyyy').format(list.finishedIn),
-                                                      delete: () => ref.read(itemListProvider.notifier).removeItem(
-                                                            list.itemId,
-                                                            context,
-                                                          ),
-                                                      edit: () => showModal(palette, list),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(height: 20),
-                                                ],
-                                              )
-                                            : const Center();
+
+                                        return InkWell(
+                                          onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                          child: CustomGridTile(
+                                            constraints: constraints,
+                                            list: list.name!,
+                                            details: list.details!,
+                                            isFinished: list.isFinished!,
+                                            text: 'Finalizado em',
+                                            alteredIn: DateFormat('dd/MM/yyyy').format(list.finishedIn),
+                                            delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                  list.itemId,
+                                                  context,
+                                                ),
+                                            edit: () => showModal(palette, list),
+                                          ),
+                                        );
                                       },
                                     ),
                                   ),
                                 )
-                              ],
-                            )
                           : Padding(
                               padding: const EdgeInsets.only(top: 70),
                               child: SizedBox(

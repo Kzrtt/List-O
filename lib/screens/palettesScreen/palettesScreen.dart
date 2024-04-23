@@ -4,6 +4,7 @@ import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/widgets/header.dart';
+import 'package:prj_list_app/widgets/simpleHeader.dart';
 
 class PalettesScreen extends StatefulWidget {
   const PalettesScreen({super.key});
@@ -38,11 +39,12 @@ class _PalettesScreenState extends State<PalettesScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Header(
+                        SimpleHeader(
                           constraints: constraints,
                           text: "Paletas de Cores",
                           secondText: "paletas disponiveis no app!",
                           hasBackArrow: true,
+                          headerTitle: "Paleta de Cores",
                           menuTap: () => UtilsMethods.showOptionsModal(
                             context,
                             constraints,

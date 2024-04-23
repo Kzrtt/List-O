@@ -87,7 +87,7 @@ class _CustomGridTileState extends State<CustomGridTile> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         MiniButton(
-                          onTap: () {},
+                          onTap: () => widget.delete,
                           height: 40,
                           width: 60,
                           icon: Icons.delete,
@@ -95,7 +95,7 @@ class _CustomGridTileState extends State<CustomGridTile> {
                           titleColor: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
                         ),
                         MiniButton(
-                          onTap: () {},
+                          onTap: () => widget.edit,
                           height: 40,
                           width: 60,
                           icon: Icons.edit,

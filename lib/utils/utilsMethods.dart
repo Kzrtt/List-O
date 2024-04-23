@@ -45,13 +45,21 @@ class UtilsMethods {
     return isYesterday || isToday;
   }
 
+  static Color getMixedColor(Color color, {double opacity = 0.5, Color backgroundColor = Colors.white}) {
+    int red = ((color.red * opacity) + (backgroundColor.red * (1 - opacity))).round();
+    int green = ((color.green * opacity) + (backgroundColor.green * (1 - opacity))).round();
+    int blue = ((color.blue * opacity) + (backgroundColor.blue * (1 - opacity))).round();
+
+    return Color.fromRGBO(red, green, blue, 1); // Opacidade fixada em 1 para não reduzir a opacidade da cor resultante
+  }
+
   static void showOptionsModal(BuildContext context, BoxConstraints constraints, AppPalette palette) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
       builder: (context) {
         return Container(
-          height: 700,
+          height: 600,
           width: constraints.maxWidth,
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(
@@ -82,7 +90,7 @@ class UtilsMethods {
               Expanded(
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     InkWell(
                       onTap: () => GoRouter.of(context).push("/oldLists"),
                       child: EditOptionButton(
@@ -100,7 +108,7 @@ class UtilsMethods {
                         AppPreferences prefs = AppPreferences();
                         prefs.removeItem(PrefsContants.itemList);
                         prefs.removeItem(PrefsContants.preferredColor);
-                        GoRouter.of(context).pushReplacementNamed('/');
+                        GoRouter.of(context).pushReplacementNamed('/homeScreen');
                       },
                       child: EditOptionButton(
                         constraints: constraints,
@@ -119,6 +127,18 @@ class UtilsMethods {
                         title: "Paletas de Cores",
                         content: "Alterne entre os temas disponiveis no App",
                         icon: Icons.palette_outlined,
+                        color: palette.titleColor,
+                        iconColor: palette.tileColor,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                      onTap: () => GoRouter.of(context).push("/advancedMode"),
+                      child: EditOptionButton(
+                        constraints: constraints,
+                        title: "Modo Avançado",
+                        content: "Entenda oque é o modo avançado",
+                        icon: Icons.star_outline,
                         color: palette.titleColor,
                         iconColor: palette.tileColor,
                       ),

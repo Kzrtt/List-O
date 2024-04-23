@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
+import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/widgets/selectColor.dart';
 
 class Header extends StatelessWidget {
@@ -38,104 +40,126 @@ class Header extends StatelessWidget {
         final palette = ref.watch(themeProvider).value;
         final orientation = ref.watch(orientationProvider).value;
 
-        return Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 140,
-                width: constraints.maxWidth,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          hasBackArrow!
-                              ? InkWell(
-                                  onTap: () => Navigator.of(context).pop(),
-                                  child: SizedBox(
-                                    width: 60,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Icon(
-                                          Icons.arrow_back_ios,
-                                          color: palette.titleColor,
-                                          size: 30,
-                                        ),
-                                      ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      color: palette.tileColor.withOpacity(.7),
+                      height: 120,
+                      width: constraints.maxWidth,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 25),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                    onTap: () => ref.read(orientationProvider.notifier).toggleOrientation(),
+                                    child: SizedBox(
+                                      width: 60,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            orientation == "list" ? Icons.grid_view_outlined : Icons.splitscreen,
+                                            color: palette.titleColor,
+                                            size: 30,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                )
-                              : const Center(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: InkWell(
-                              onTap: () => ref.read(orientationProvider.notifier).toggleOrientation(),
-                              child: SizedBox(
-                                width: 60,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Icon(
-                                      orientation == "list" ? Icons.splitscreen : Icons.grid_view_outlined,
-                                      color: palette.titleColor,
-                                      size: 30,
+                                  InkWell(
+                                    onTap: menuTap,
+                                    child: SizedBox(
+                                      width: 30,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.person_outline,
+                                            color: palette.titleColor,
+                                            size: 30,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15),
-                        child: InkWell(
-                          onTap: menuTap,
-                          child: SizedBox(
-                            width: 60,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Icon(
-                                  Icons.person_outline,
-                                  color: palette.titleColor,
-                                  size: 30,
-                                ),
-                              ],
-                            ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: .1,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 60,
+                      width: constraints.maxWidth * .9,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        color: UtilsMethods.getMixedColor(palette.titleColor.withOpacity(.9)),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Home",
+                          style: TextStyle(
+                            color: palette.titleColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    text,
+                    style: TextStyle(
+                      color: palette.titleColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    secondText,
+                    style: TextStyle(
+                      color: palette.subTitleColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                text,
-                style: TextStyle(
-                  color: palette.titleColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                secondText,
-                style: TextStyle(
-                  color: palette.subTitleColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

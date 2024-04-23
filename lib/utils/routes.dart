@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:prj_list_app/screens/advancedModeScreen/advancedModeScreen.dart';
 import 'package:prj_list_app/screens/homeScreen/homeScreen.dart';
 import 'package:prj_list_app/screens/listDetailsScreen/listDetailsScreen.dart';
 import 'package:prj_list_app/screens/oldListScreen/oldListsScreen.dart';
@@ -48,6 +49,15 @@ final routes = GoRouter(
       pageBuilder: (context, state) {
         return const MaterialPage(
           child: PalettesScreen(),
+          fullscreenDialog: true,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/advancedMode',
+      pageBuilder: (context, state) {
+        return const MaterialPage(
+          child: AdvancedModeScreen(),
           fullscreenDialog: true,
         );
       },

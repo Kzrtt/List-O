@@ -269,7 +269,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ],
                                         )
                                       : SizedBox(
-                                          height: (listProvider.length / 2) * 300,
                                           width: constraints.maxWidth * .95,
                                           child: Padding(
                                             padding: const EdgeInsets.only(left: 20),
@@ -323,6 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
+                                          const SizedBox(height: 20),
                                           const Divider(endIndent: 50, indent: 50),
                                           const SizedBox(height: 20),
                                           Text(
@@ -378,7 +378,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ],
                                         )
                                       : SizedBox(
-                                          height: (listProvider.length / 2) * 200,
                                           width: constraints.maxWidth * .95,
                                           child: Padding(
                                             padding: const EdgeInsets.only(left: 20),

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
+import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/models/List.dart';
 import 'package:prj_list_app/screens/finishedPage.dart';
@@ -12,6 +13,7 @@ import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/utils/validators.dart';
 import 'package:prj_list_app/widgets/buttonWithIcon.dart';
 import 'package:prj_list_app/widgets/header.dart';
+import 'package:prj_list_app/widgets/itemGridTile.dart';
 import 'package:prj_list_app/widgets/itemTile.dart';
 import 'package:prj_list_app/widgets/listTile.dart';
 import 'package:prj_list_app/widgets/simpleHeader.dart';
@@ -50,6 +52,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
         builder: (context, ref, child) {
           final palette = ref.watch(themeProvider).value;
           final lists = ref.watch(itemListProvider).value;
+          final orientation = ref.watch(orientationProvider).value;
 
           ItemList list = ItemList(alteredIn: DateTime.now(), finishedIn: DateTime.now());
           for (var i = 0; i < lists.length; i++) {
@@ -250,6 +253,7 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                           text: list.name!,
                           secondText: "Ultima Alteração: ${DateFormat('dd/MM/yyyy').format(list.alteredIn)}",
                           hasBackArrow: true,
+                          headerTitle: list.name!,
                           menuTap: () => UtilsMethods.showOptionsModal(
                             context,
                             constraints,
@@ -257,19 +261,81 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        Wrap(
-                          children: [
-                            SizedBox(
-                              width: constraints.maxWidth,
-                              child: Column(
-                                children: List.generate(
-                                  list.items!.length,
-                                  (index) {
-                                    Item item = list.items![index];
+                        orientation == "list"
+                            ? Wrap(
+                                children: [
+                                  SizedBox(
+                                    width: constraints.maxWidth,
+                                    child: Column(
+                                      children: List.generate(
+                                        list.items!.length,
+                                        (index) {
+                                          Item item = list.items![index];
 
-                                    return Column(
-                                      children: [
-                                        ItemTile(
+                                          return Column(
+                                            children: [
+                                              ItemTile(
+                                                constraints: constraints,
+                                                list: item.name!,
+                                                details: "${item.quantity} ${item.measurementUnity}",
+                                                index: (index + 1).toString(),
+                                                isChecked: item.isChecked!,
+                                                onTap1: () => ref.read(itemListProvider.notifier).recheckItemInList(
+                                                      item.id!,
+                                                      widget.listId,
+                                                    ),
+                                                onTap2: () async {
+                                                  if (!item.isChecked!) {
+                                                    await ref.read(itemListProvider.notifier).checkItemInList(
+                                                          item.id!,
+                                                          widget.listId,
+                                                        );
+                                                    bool isAllChecked = true;
+                                                    for (var element in list.items!) {
+                                                      if (!element.isChecked!) {
+                                                        isAllChecked = false;
+                                                      }
+                                                    }
+                                                    if (isAllChecked) {
+                                                      showTransparentPage(context);
+                                                    }
+                                                    print(isAllChecked);
+                                                  } else {
+                                                    ref.read(itemListProvider.notifier).removeItemInList(
+                                                          item.id!,
+                                                          widget.listId,
+                                                        );
+                                                  }
+                                                },
+                                              ),
+                                              const SizedBox(height: 20),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            : SizedBox(
+                                width: constraints.maxWidth * .95,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                                  child: GridView.builder(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      crossAxisSpacing: 20.0,
+                                      mainAxisSpacing: 20.0,
+                                    ),
+                                    itemCount: list.items!.length,
+                                    itemBuilder: (context, index) {
+                                      Item item = list.items![index];
+
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 30),
+                                        child: ItemGridTile(
                                           constraints: constraints,
                                           list: item.name!,
                                           details: "${item.quantity} ${item.measurementUnity}",
@@ -303,15 +369,11 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                                             }
                                           },
                                         ),
-                                        const SizedBox(height: 20),
-                                      ],
-                                    );
-                                  },
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
-                            )
-                          ],
-                        )
                       ],
                     ),
                   ),
