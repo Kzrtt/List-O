@@ -484,6 +484,100 @@ class CustomTextFormFieldWithHelper extends StatelessWidget {
   }
 }
 
+class CustomTextFormFieldLogin extends StatelessWidget {
+  final BoxConstraints constraints;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final String? Function(String? text)? validator;
+  final String hintText;
+  final int? maxLength;
+  final void Function(String? text)? onSaved;
+  final double? height;
+  final double? width;
+  final String? initialValue;
+  final String label;
+  final AppPalette? palette;
+
+  const CustomTextFormFieldLogin({
+    required this.constraints,
+    this.controller,
+    required this.hintText,
+    this.maxLength,
+    this.validator,
+    this.onSaved,
+    this.height,
+    this.width,
+    this.focusNode,
+    required this.label,
+    this.initialValue,
+    this.palette = AppPalette.lightColorPalette,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height == null ? 80 : height!,
+      width: width == null ? constraints.maxWidth * .9 : constraints.maxWidth * width!,
+      child: TextSelectionTheme(
+        data: TextSelectionThemeData(
+          cursorColor: palette!.titleColor,
+        ),
+        child: TextFormField(
+          focusNode: focusNode,
+          maxLength: maxLength,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          validator: validator,
+          controller: controller,
+          initialValue: initialValue,
+          onSaved: onSaved,
+          decoration: InputDecoration(
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+            label: Text(label),
+            labelStyle: TextStyle(
+              fontSize: 14,
+              color: AppPalette.darkColorPalette.titleColor,
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            focusedErrorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Color.fromRGBO(206, 36, 36, 1),
+                width: 2,
+              ),
+            ),
+            errorBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Color.fromRGBO(206, 36, 36, 1),
+                width: 2,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: AppPalette.darkColorPalette.titleColor.withOpacity(.4),
+                width: 2,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: AppPalette.darkColorPalette.titleColor.withOpacity(.4),
+                width: 2,
+              ),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(14),
+              ),
+            ),
+            hintText: hintText,
+            hintStyle: TextStyle(
+              fontSize: 14,
+              color: AppPalette.darkColorPalette.titleColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CustomTextFormField extends StatelessWidget {
   final BoxConstraints constraints;
   final TextEditingController? controller;
@@ -618,33 +712,33 @@ class PasswordTextField extends StatelessWidget {
             floatingLabelBehavior: FloatingLabelBehavior.always,
             label: Text(label),
             labelStyle: TextStyle(
-              fontSize: constraints.maxHeight * .025,
-              color: Colors.black.withOpacity(.8),
+              fontSize: 14,
+              color: AppPalette.darkColorPalette.titleColor,
             ),
             filled: true,
             fillColor: Colors.white,
-            focusedErrorBorder: OutlineInputBorder(
+            focusedErrorBorder: const OutlineInputBorder(
               borderSide: BorderSide(
-                color: const Color.fromRGBO(206, 36, 36, 1),
-                width: constraints.maxWidth * .004,
+                color: Color.fromRGBO(206, 36, 36, 1),
+                width: 2,
               ),
             ),
-            errorBorder: OutlineInputBorder(
+            errorBorder: const OutlineInputBorder(
               borderSide: BorderSide(
-                color: const Color.fromRGBO(206, 36, 36, 1),
-                width: constraints.maxWidth * .004,
+                color: Color.fromRGBO(206, 36, 36, 1),
+                width: 2,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: palette!.titleColor,
-                width: constraints.maxWidth * .004,
+                color: AppPalette.darkColorPalette.titleColor.withOpacity(.4),
+                width: 2,
               ),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: palette!.titleColor,
-                width: constraints.maxWidth * .004,
+                color: AppPalette.darkColorPalette.titleColor.withOpacity(.4),
+                width: 2,
               ),
               borderRadius: const BorderRadius.all(
                 Radius.circular(14),
@@ -652,7 +746,8 @@ class PasswordTextField extends StatelessWidget {
             ),
             hintText: hintText,
             hintStyle: TextStyle(
-              fontSize: constraints.maxHeight * .02,
+              fontSize: 14,
+              color: AppPalette.darkColorPalette.titleColor,
             ),
           ),
         ),

@@ -191,16 +191,10 @@ class _OldListScreenState extends State<OldListScreen> {
                       SimpleHeader(
                         headerTitle: "Listas Antigas",
                         constraints: constraints,
-                        text: "Listas Antigas",
                         secondText: UtilsMethods.capatalize(
                           UtilsMethods.getCorrectDate(
                             DateTime.now(),
                           ),
-                        ),
-                        menuTap: () => UtilsMethods.showOptionsModal(
-                          context,
-                          constraints,
-                          palette,
                         ),
                         hasBackArrow: true,
                       ),

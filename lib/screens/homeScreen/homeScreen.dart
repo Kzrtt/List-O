@@ -9,6 +9,7 @@ import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
 import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/models/List.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/utilsMethods.dart';
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
           final palette = ref.watch(themeProvider).value;
           final orientation = ref.watch(orientationProvider).value;
           final listProvider = ref.watch(itemListProvider).value;
+          final user = ref.watch(userProvider).value;
 
           showModal(AppPalette palette, ItemList listParam) {
             ItemList list = ItemList(alteredIn: DateTime.now(), finishedIn: DateTime.now());
@@ -202,17 +204,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Header(
                           constraints: constraints,
-                          text: "Olá, Usuário",
+                          text: "Olá, ${user.name == "" ? "Visitante" : user.name}",
                           secondText: UtilsMethods.capatalize(
                             UtilsMethods.getCorrectDate(
                               DateTime.now(),
                             ),
                           ),
-                          menuTap: () => UtilsMethods.showOptionsModal(
-                            context,
-                            constraints,
-                            palette,
-                          ),
+                          menuTap: () {
+                            if (user.isAdvanced) {
+                              GoRouter.of(context).push('/profileScreen');
+                            } else {
+                              UtilsMethods.showOptionsModal(
+                                context,
+                                constraints,
+                                palette,
+                              );
+                            }
+                          },
                         ),
                         const SizedBox(height: 50),
                         Padding(
@@ -305,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         )
                                   : Padding(
-                                      padding: const EdgeInsets.only(top: 70),
+                                      padding: const EdgeInsets.only(top: 30),
                                       child: SizedBox(
                                         height: 250,
                                         width: constraints.maxWidth,
@@ -313,6 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           palette.homePageImage!,
                                           fit: BoxFit.contain,
                                           alignment: Alignment.center,
+                                          colorFilter: ColorFilter.mode(palette.titleColor, BlendMode.modulate),
                                         ),
                                       ),
                                     ),
@@ -415,7 +424,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         )
                                   : const Center(),
-                              const SizedBox(height: 50),
+                              const SizedBox(height: 150),
                             ],
                           ),
                         ),

@@ -41,15 +41,9 @@ class _PalettesScreenState extends State<PalettesScreen> {
                       children: [
                         SimpleHeader(
                           constraints: constraints,
-                          text: "Paletas de Cores",
                           secondText: "paletas disponiveis no app!",
                           hasBackArrow: true,
                           headerTitle: "Paleta de Cores",
-                          menuTap: () => UtilsMethods.showOptionsModal(
-                            context,
-                            constraints,
-                            palette,
-                          ),
                         ),
                         const SizedBox(height: 20),
                         Wrap(

@@ -182,6 +182,7 @@ class ListNotifier extends ValueNotifier<List<ItemList>> {
         value = value.where((element) => element.itemId != itemId).toList();
         prefsItemList = prefsItemList.where((element) => element.itemId != itemId).toList();
         setPrefsItemList(prefsItemList);
+        Navigator.of(context).pop();
       },
       onCancelBtnTap: () => Navigator.of(context).pop(),
     );

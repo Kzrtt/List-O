@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/constants/prefsConstantes.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/utils/AppPreferences.dart';
 import 'package:prj_list_app/widgets/editOptionTile.dart';
 
@@ -58,96 +60,116 @@ class UtilsMethods {
       isScrollControlled: true,
       context: context,
       builder: (context) {
-        return Container(
-          height: 600,
-          width: constraints.maxWidth,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(20),
-            ),
-            color: palette.backgroundColor,
-          ),
-          child: Column(
-            children: [
-              Container(
-                height: 150,
-                width: constraints.maxWidth,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  ),
-                  color: palette.titleColor.withOpacity(.8),
+        return Consumer(
+          builder: (context, ref, child) {
+            return Container(
+              height: 700,
+              width: constraints.maxWidth,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.person_outline,
-                    color: palette.tileColor,
-                    size: 100,
-                  ),
-                ),
+                color: palette.backgroundColor,
               ),
-              Expanded(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 30),
-                    InkWell(
-                      onTap: () => GoRouter.of(context).push("/oldLists"),
-                      child: EditOptionButton(
-                        constraints: constraints,
-                        title: "Listas Antigas",
-                        content: "Reveja suas listas antigas",
-                        icon: Icons.history_outlined,
-                        color: palette.titleColor,
-                        iconColor: palette.tileColor,
+              child: Column(
+                children: [
+                  Container(
+                    height: 150,
+                    width: constraints.maxWidth,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                      color: palette.titleColor.withOpacity(.8),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.person_outline,
+                        color: palette.tileColor,
+                        size: 100,
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    InkWell(
-                      onTap: () {
-                        AppPreferences prefs = AppPreferences();
-                        prefs.removeItem(PrefsContants.itemList);
-                        prefs.removeItem(PrefsContants.preferredColor);
-                        GoRouter.of(context).pushReplacementNamed('/homeScreen');
-                      },
-                      child: EditOptionButton(
-                        constraints: constraints,
-                        title: "Limpar Listas",
-                        content: "Isso fará você perder as listas",
-                        icon: Icons.delete_forever_outlined,
-                        color: palette.titleColor,
-                        iconColor: palette.tileColor,
-                      ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 30),
+                        InkWell(
+                          onTap: () => GoRouter.of(context).push("/oldLists"),
+                          child: EditOptionButton(
+                            constraints: constraints,
+                            title: "Listas Antigas",
+                            content: "Reveja suas listas antigas",
+                            icon: Icons.history_outlined,
+                            color: palette.titleColor,
+                            iconColor: palette.tileColor,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: () {
+                            AppPreferences prefs = AppPreferences();
+                            prefs.removeItem(PrefsContants.itemList);
+                            prefs.removeItem(PrefsContants.preferredColor);
+                            GoRouter.of(context).pushReplacementNamed('/homeScreen');
+                          },
+                          child: EditOptionButton(
+                            constraints: constraints,
+                            title: "Limpar Listas",
+                            content: "Isso fará você perder as listas",
+                            icon: Icons.delete_forever_outlined,
+                            color: palette.titleColor,
+                            iconColor: palette.tileColor,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: () => GoRouter.of(context).push("/palettes"),
+                          child: EditOptionButton(
+                            constraints: constraints,
+                            title: "Paletas de Cores",
+                            content: "Alterne entre os temas disponiveis no App",
+                            icon: Icons.palette_outlined,
+                            color: palette.titleColor,
+                            iconColor: palette.tileColor,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: () => GoRouter.of(context).push("/advancedMode"),
+                          child: EditOptionButton(
+                            constraints: constraints,
+                            title: "Modo Avançado",
+                            content: "Entenda oque é o modo avançado",
+                            icon: Icons.star_outline,
+                            color: palette.titleColor,
+                            iconColor: palette.tileColor,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: () {
+                            ref.read(userProvider.notifier).logout();
+
+                            GoRouter.of(context).pushReplacement("/");
+                          },
+                          child: EditOptionButton(
+                            constraints: constraints,
+                            title: "Loggout",
+                            content: "Sair da sua conta :(",
+                            icon: Icons.logout,
+                            color: AppPalette.redColorPalette.titleColor,
+                            iconColor: AppPalette.redColorPalette.tileColor,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    InkWell(
-                      onTap: () => GoRouter.of(context).push("/palettes"),
-                      child: EditOptionButton(
-                        constraints: constraints,
-                        title: "Paletas de Cores",
-                        content: "Alterne entre os temas disponiveis no App",
-                        icon: Icons.palette_outlined,
-                        color: palette.titleColor,
-                        iconColor: palette.tileColor,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    InkWell(
-                      onTap: () => GoRouter.of(context).push("/advancedMode"),
-                      child: EditOptionButton(
-                        constraints: constraints,
-                        title: "Modo Avançado",
-                        content: "Entenda oque é o modo avançado",
-                        icon: Icons.star_outline,
-                        color: palette.titleColor,
-                        iconColor: palette.tileColor,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

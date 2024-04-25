@@ -7,6 +7,7 @@ import 'package:prj_list_app/constants/prefsConstantes.dart';
 import 'package:prj_list_app/controllers/listProvider.dart';
 import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/AppPreferences.dart';
 
@@ -35,6 +36,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     List<ItemList> prefsItemList = items.map((e) => ItemList.fromJson(jsonDecode(e))).toList();
     String palette = await prefs.getStringItem(PrefsContants.preferredColor);
     String orientation = await prefs.getStringItem(PrefsContants.preferredOrientation);
+    String userEmail = await prefs.getStringItem(PrefsContants.signedUser);
     for (var element in prefsItemList) {
       print(element.name);
     }
@@ -51,7 +53,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         );
     ref.read(itemListProvider.notifier).setItems(prefsItemList);
 
-    Future.delayed(const Duration(seconds: 2)).then((value) => GoRouter.of(context).push('/homeScreen'));
+    if (userEmail != "") {
+      ref.read(userProvider.notifier).getUserByEmail(userEmail);
+      Future.delayed(const Duration(seconds: 2)).then((value) => GoRouter.of(context).push('/homeScreen'));
+    } else {
+      Future.delayed(const Duration(seconds: 2)).then((value) => GoRouter.of(context).push('/login'));
+    }
   }
 
   @override

@@ -250,15 +250,9 @@ class _ListDetailsScreenState extends State<ListDetailsScreen> {
                       children: [
                         SimpleHeader(
                           constraints: constraints,
-                          text: list.name!,
                           secondText: "Ultima Alteração: ${DateFormat('dd/MM/yyyy').format(list.alteredIn)}",
                           hasBackArrow: true,
                           headerTitle: list.name!,
-                          menuTap: () => UtilsMethods.showOptionsModal(
-                            context,
-                            constraints,
-                            palette,
-                          ),
                         ),
                         const SizedBox(height: 20),
                         orientation == "list"

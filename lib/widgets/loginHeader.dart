@@ -9,22 +9,18 @@ import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/widgets/selectColor.dart';
 
-class SimpleHeader extends StatelessWidget {
+class LoginHeader extends StatelessWidget {
   BoxConstraints constraints;
-  String secondText;
   bool? hasBackArrow;
   String headerTitle;
   bool? hasSecondText;
-  bool? hasSpacing;
 
-  SimpleHeader({
+  LoginHeader({
     super.key,
     required this.constraints,
-    required this.secondText,
     required this.headerTitle,
     this.hasBackArrow = false,
     this.hasSecondText = true,
-    this.hasSpacing = true,
   });
 
   void showTransparentPage(BuildContext context) {
@@ -51,7 +47,7 @@ class SimpleHeader extends StatelessWidget {
                   children: [
                     Container(
                       color: palette.tileColor.withOpacity(.7),
-                      height: 120,
+                      height: 100,
                       width: constraints.maxWidth,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 25),
@@ -101,8 +97,9 @@ class SimpleHeader extends StatelessWidget {
                       height: 60,
                       width: constraints.maxWidth * .9,
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
                         ),
                         color: UtilsMethods.getMixedColor(palette.titleColor.withOpacity(.9)),
                       ),
@@ -121,26 +118,7 @@ class SimpleHeader extends StatelessWidget {
                 ),
               ],
             ),
-            hasSpacing! ? const SizedBox(height: 20) : const Center(),
-            hasSecondText!
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 5),
-                        Text(
-                          secondText,
-                          style: TextStyle(
-                            color: palette.subTitleColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : const Center(),
+            const SizedBox(height: 20),
           ],
         );
       },
