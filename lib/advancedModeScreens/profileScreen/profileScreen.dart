@@ -23,12 +23,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Consumer(
       builder: (context, ref, child) {
         final user = ref.watch(userProvider).value;
-        final palette = ref.watch(themeProvider).value;
+        final palette = ref.watch(userProvider).value.palette;
 
         return LayoutBuilder(
           builder: (context, constraints) {
             return Scaffold(
-              backgroundColor: palette.backgroundColor,
+              backgroundColor: palette!.backgroundColor,
               body: SafeArea(
                 child: SizedBox(
                   height: constraints.maxHeight,
@@ -154,11 +154,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onTap: () => GoRouter.of(context).push("/advancedMode"),
                           child: EditOptionButton(
                             constraints: constraints,
-                            title: "Modo Avançado",
-                            content: "Entenda oque é o modo avançado",
-                            icon: Icons.star_outline,
-                            color: palette.titleColor,
-                            iconColor: palette.tileColor,
+                            title: "Desativar Modo Avançado",
+                            content: "Isso irá voltar sua conta para o modo padrão",
+                            icon: Icons.warning,
+                            color: AppPalette.redColorPalette.titleColor,
+                            iconColor: AppPalette.redColorPalette.tileColor,
                           ),
                         ),
                         const SizedBox(height: 20),

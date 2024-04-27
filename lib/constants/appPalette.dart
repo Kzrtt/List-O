@@ -83,4 +83,41 @@ enum AppPalette {
   final IconData icon;
   final String? homePageImage;
   final String? shoppingListImage;
+
+  String get name {
+    switch (this) {
+      case AppPalette.lightColorPalette:
+        return "lightColorPalette";
+      case AppPalette.darkColorPalette:
+        return "darkColorPalette";
+      case AppPalette.pinkColorPalette:
+        return "pinkColorPalette";
+      case AppPalette.blueColorPalette:
+        return "blueColorPalette";
+      case AppPalette.redColorPalette:
+        return "redColorPalette";
+      case AppPalette.disabledColor:
+        return "disabledColor";
+    }
+  }
+
+  // Static method to retrieve an enum value from a string identifier
+  static AppPalette fromName(String name) {
+    switch (name) {
+      case "lightColorPalette":
+        return AppPalette.lightColorPalette;
+      case "darkColorPalette":
+        return AppPalette.darkColorPalette;
+      case "pinkColorPalette":
+        return AppPalette.pinkColorPalette;
+      case "blueColorPalette":
+        return AppPalette.blueColorPalette;
+      case "redColorPalette":
+        return AppPalette.redColorPalette;
+      case "disabledColor":
+        return AppPalette.disabledColor;
+      default:
+        return AppPalette.darkColorPalette;
+    }
+  }
 }

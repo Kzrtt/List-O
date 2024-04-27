@@ -8,6 +8,7 @@ import 'package:prj_list_app/controllers/listProvider.dart';
 import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
 import 'package:prj_list_app/controllers/userProvider.dart';
+import 'package:prj_list_app/models/User.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/AppPreferences.dart';
 
@@ -41,6 +42,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       print(element.name);
     }
 
+    await ref.read(userProvider.notifier).getUserByEmail(userEmail);
+
     print("palette: $palette");
     if (palette == "") {
       palette = "1";
@@ -55,7 +58,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (userEmail != "") {
       ref.read(userProvider.notifier).getUserByEmail(userEmail);
-      Future.delayed(const Duration(seconds: 2)).then((value) => GoRouter.of(context).push('/homeScreen'));
+      if (ref.watch(userProvider).value.isAdvanced) {
+        Future.delayed(const Duration(seconds: 2)).then((value) => GoRouter.of(context).push('/advHomeScreen'));
+      } else {
+        Future.delayed(const Duration(seconds: 2)).then((value) => GoRouter.of(context).push('/homeScreen'));
+      }
     } else {
       Future.delayed(const Duration(seconds: 2)).then((value) => GoRouter.of(context).push('/login'));
     }
@@ -66,10 +73,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     return SafeArea(
       child: Consumer(
         builder: (context, ref, child) {
-          final palette = ref.watch(themeProvider).value;
+          final user = ref.watch(userProvider).value;
+          final palette = user.isAdvanced ? user.palette : ref.watch(themeProvider).value;
 
           return Scaffold(
-            backgroundColor: palette.backgroundColor,
+            backgroundColor: palette!.backgroundColor,
             body: LayoutBuilder(
               builder: (context, constraints) {
                 return SizedBox(

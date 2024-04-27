@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/widgets/miniButton.dart';
 
@@ -36,7 +37,14 @@ class _CustomListTileState extends State<CustomListTile> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final palette = ref.watch(themeProvider).value;
+        late final AppPalette? palette;
+        final user = ref.watch(userProvider).value;
+
+        if (user.isAdvanced) {
+          palette = ref.watch(themeProvider).value;
+        } else {
+          palette = ref.watch(userProvider).value.palette;
+        }
 
         return Container(
           height: 80,
@@ -45,7 +53,7 @@ class _CustomListTileState extends State<CustomListTile> {
             borderRadius: const BorderRadius.all(
               Radius.circular(10),
             ),
-            color: widget.isFinished ? AppPalette.disabledColor.tileColor : palette.tileColor,
+            color: widget.isFinished ? AppPalette.disabledColor.tileColor : palette!.tileColor,
           ),
           child: Row(
             children: [
@@ -61,13 +69,13 @@ class _CustomListTileState extends State<CustomListTile> {
                       borderRadius: const BorderRadius.all(
                         Radius.circular(5),
                       ),
-                      color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor.withOpacity(.8),
+                      color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette!.titleColor.withOpacity(.8),
                     ),
                     child: Center(
                       child: Icon(
                         Icons.shopping_cart,
                         size: 40,
-                        color: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
+                        color: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette!.buttonColor,
                       ),
                     ),
                   ),
@@ -84,7 +92,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     Text(
                       widget.list,
                       style: TextStyle(
-                        color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                        color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -92,7 +100,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     Text(
                       widget.details,
                       style: TextStyle(
-                        color: widget.isFinished ? AppPalette.disabledColor.subTitleColor : palette.subTitleColor,
+                        color: widget.isFinished ? AppPalette.disabledColor.subTitleColor : palette!.subTitleColor,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -101,7 +109,7 @@ class _CustomListTileState extends State<CustomListTile> {
                     Text(
                       "${widget.text}: ${widget.alteredIn}",
                       style: TextStyle(
-                        color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                        color: widget.isFinished ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),
@@ -121,14 +129,14 @@ class _CustomListTileState extends State<CustomListTile> {
                       MiniButton(
                         onTap: () => widget.delete(),
                         icon: Icons.delete,
-                        buttonColor: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
-                        titleColor: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                        buttonColor: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette!.buttonColor,
+                        titleColor: widget.isFinished ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                       ),
                       MiniButton(
                         onTap: () => widget.edit(),
                         icon: Icons.edit,
-                        buttonColor: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
-                        titleColor: widget.isFinished ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                        buttonColor: widget.isFinished ? AppPalette.disabledColor.buttonColor : palette!.buttonColor,
+                        titleColor: widget.isFinished ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                       ),
                     ],
                   ),

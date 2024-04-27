@@ -133,7 +133,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                               if (loginFormKey.currentState!.validate()) {
                                                 loginFormKey.currentState!.save();
                                                 if (await ref.read(userProvider.notifier).login(email, password, context) == 1) {
-                                                  GoRouter.of(context).push('/homeScreen');
+                                                  if (ref.watch(userProvider).value.isAdvanced) {
+                                                    GoRouter.of(context).push('/advHomeScreen');
+                                                  } else {
+                                                    GoRouter.of(context).push('/homeScreen');
+                                                  }
                                                 }
                                               }
                                             },

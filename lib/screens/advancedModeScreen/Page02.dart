@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 
 class Page02 extends StatelessWidget {
   BoxConstraints constraints;
@@ -16,7 +17,8 @@ class Page02 extends StatelessWidget {
     return SingleChildScrollView(
       child: Consumer(
         builder: (context, ref, child) {
-          final palette = ref.watch(themeProvider).value;
+          final user = ref.watch(userProvider).value;
+          final palette = user.isAdvanced ? user.palette : ref.watch(themeProvider).value;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -27,7 +29,7 @@ class Page02 extends StatelessWidget {
                 Text(
                   "Porque usar?",
                   style: TextStyle(
-                    color: palette.titleColor,
+                    color: palette!.titleColor,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),

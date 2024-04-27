@@ -26,6 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       builder: (context, ref, child) {
         const palette = AppPalette.darkColorPalette;
         User userToSignUp = User(
+          id: 0,
           name: "",
           email: "",
           photo: "",

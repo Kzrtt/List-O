@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/widgets/miniButton.dart';
 
@@ -36,7 +37,14 @@ class _ItemGridTileState extends State<ItemGridTile> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final palette = ref.watch(themeProvider).value;
+        late final AppPalette? palette;
+        final user = ref.watch(userProvider).value;
+
+        if (user.isAdvanced) {
+          palette = ref.watch(themeProvider).value;
+        } else {
+          palette = ref.watch(userProvider).value.palette;
+        }
 
         return Container(
           height: 130,
@@ -45,7 +53,7 @@ class _ItemGridTileState extends State<ItemGridTile> {
             borderRadius: const BorderRadius.all(
               Radius.circular(20),
             ),
-            color: widget.isChecked ? AppPalette.disabledColor.tileColor : palette.tileColor,
+            color: widget.isChecked ? AppPalette.disabledColor.tileColor : palette!.tileColor,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +67,7 @@ class _ItemGridTileState extends State<ItemGridTile> {
                     Text(
                       widget.list,
                       style: TextStyle(
-                        color: widget.isChecked ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                        color: widget.isChecked ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -67,7 +75,7 @@ class _ItemGridTileState extends State<ItemGridTile> {
                     Text(
                       widget.details,
                       style: TextStyle(
-                        color: widget.isChecked ? AppPalette.disabledColor.subTitleColor : palette.subTitleColor,
+                        color: widget.isChecked ? AppPalette.disabledColor.subTitleColor : palette!.subTitleColor,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -87,16 +95,16 @@ class _ItemGridTileState extends State<ItemGridTile> {
                       height: 40,
                       width: 60,
                       icon: Icons.refresh,
-                      buttonColor: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
-                      titleColor: widget.isChecked ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                      buttonColor: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette!.buttonColor,
+                      titleColor: widget.isChecked ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                     ),
                     MiniButton(
                       onTap: () => widget.onTap2!(),
                       height: 40,
                       width: 60,
                       icon: widget.isChecked ? Icons.delete : Icons.check,
-                      buttonColor: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
-                      titleColor: widget.isChecked ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                      buttonColor: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette!.buttonColor,
+                      titleColor: widget.isChecked ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                     ),
                   ],
                 ),

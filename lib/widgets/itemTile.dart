@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/widgets/miniButton.dart';
 
@@ -36,7 +37,14 @@ class _ItemTileState extends State<ItemTile> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final palette = ref.watch(themeProvider).value;
+        late final AppPalette? palette;
+        final user = ref.watch(userProvider).value;
+
+        if (user.isAdvanced) {
+          palette = ref.watch(themeProvider).value;
+        } else {
+          palette = ref.watch(userProvider).value.palette;
+        }
 
         return Container(
           height: 80,
@@ -45,7 +53,7 @@ class _ItemTileState extends State<ItemTile> {
             borderRadius: const BorderRadius.all(
               Radius.circular(10),
             ),
-            color: widget.isChecked ? AppPalette.disabledColor.tileColor : palette.tileColor,
+            color: widget.isChecked ? AppPalette.disabledColor.tileColor : palette!.tileColor,
           ),
           child: Row(
             children: [
@@ -61,13 +69,13 @@ class _ItemTileState extends State<ItemTile> {
                       borderRadius: const BorderRadius.all(
                         Radius.circular(5),
                       ),
-                      color: widget.isChecked ? AppPalette.disabledColor.titleColor.withOpacity(.8) : palette.titleColor.withOpacity(.8),
+                      color: widget.isChecked ? AppPalette.disabledColor.titleColor.withOpacity(.8) : palette!.titleColor.withOpacity(.8),
                     ),
                     child: Center(
                       child: Text(
                         widget.index,
                         style: TextStyle(
-                          color: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
+                          color: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette!.buttonColor,
                           fontSize: 40,
                           fontWeight: FontWeight.w600,
                         ),
@@ -87,7 +95,7 @@ class _ItemTileState extends State<ItemTile> {
                     Text(
                       widget.list,
                       style: TextStyle(
-                        color: widget.isChecked ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                        color: widget.isChecked ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -95,7 +103,7 @@ class _ItemTileState extends State<ItemTile> {
                     Text(
                       widget.details,
                       style: TextStyle(
-                        color: widget.isChecked ? AppPalette.disabledColor.subTitleColor : palette.subTitleColor,
+                        color: widget.isChecked ? AppPalette.disabledColor.subTitleColor : palette!.subTitleColor,
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -123,8 +131,8 @@ class _ItemTileState extends State<ItemTile> {
                       MiniButton(
                         onTap: () => widget.onTap2!(),
                         icon: widget.isChecked ? Icons.delete : Icons.check,
-                        buttonColor: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette.buttonColor,
-                        titleColor: widget.isChecked ? AppPalette.disabledColor.titleColor : palette.titleColor,
+                        buttonColor: widget.isChecked ? AppPalette.disabledColor.buttonColor : palette!.buttonColor,
+                        titleColor: widget.isChecked ? AppPalette.disabledColor.titleColor : palette!.titleColor,
                       ),
                     ],
                   ),

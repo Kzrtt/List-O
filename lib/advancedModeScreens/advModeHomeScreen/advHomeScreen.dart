@@ -22,14 +22,14 @@ import 'package:prj_list_app/widgets/miniButton.dart';
 import 'package:prj_list_app/widgets/textForms.dart';
 import 'package:quickalert/quickalert.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class AdvHomeScreen extends StatefulWidget {
+  const AdvHomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<AdvHomeScreen> createState() => _AdvHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _AdvHomeScreenState extends State<AdvHomeScreen> {
   final addListFormKey = GlobalKey<FormState>();
 
   @override
@@ -37,9 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Consumer(
         builder: (context, ref, child) {
-          final palette = ref.watch(themeProvider).value;
-          final orientation = ref.watch(orientationProvider).value;
-          final listProvider = ref.watch(itemListProvider).value;
+          final palette = ref.watch(userProvider).value.palette;
+          final orientation = ref.watch(userProvider).value.orientation;
+          final listProvider = ref.watch(userProvider).value.itemList;
           final user = ref.watch(userProvider).value;
 
           showModal(AppPalette palette, ItemList listParam) {
@@ -148,10 +148,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           if (addListFormKey.currentState!.validate()) {
                                             addListFormKey.currentState!.save();
                                             if (listParam.name == "create") {
-                                              ref.read(itemListProvider.notifier).addItem(list);
+                                              ref.read(userProvider.notifier).addList(list);
                                             } else {
                                               list.alteredIn = DateTime.now();
-                                              ref.read(itemListProvider.notifier).updateItem(listParam.itemId, list);
+                                              ref.read(userProvider.notifier).updateList(listParam.itemId, list);
                                             }
                                             Navigator.of(context).pop();
                                           } else {
@@ -189,10 +189,10 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 40,
               width: 120,
               borderRadius: 10,
-              onTap: () => showModal(palette, ItemList(name: "create", alteredIn: DateTime.now(), finishedIn: DateTime.now())),
+              onTap: () => showModal(palette!, ItemList(name: "create", alteredIn: DateTime.now(), finishedIn: DateTime.now())),
               icon: Icons.add,
             ),
-            backgroundColor: palette.backgroundColor,
+            backgroundColor: palette!.backgroundColor,
             body: LayoutBuilder(
               builder: (context, constraints) {
                 return SizedBox(
@@ -210,11 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               DateTime.now(),
                             ),
                           ),
-                          menuTap: () => UtilsMethods.showOptionsModal(
-                            context,
-                            constraints,
-                            palette,
-                          ),
+                          menuTap: () => GoRouter.of(context).push('/profileScreen'),
                         ),
                         const SizedBox(height: 50),
                         Padding(
@@ -245,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         ? Column(
                                                             children: [
                                                               InkWell(
-                                                                onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                                onTap: () => GoRouter.of(context).push('/advListDetails/${list.itemId}'),
                                                                 child: CustomListTile(
                                                                   constraints: constraints,
                                                                   list: list.name!,
@@ -253,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   isFinished: list.isFinished!,
                                                                   text: 'Alterado em',
                                                                   alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                                                  delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                                  delete: () => ref.read(userProvider.notifier).removeList(
                                                                         list.itemId,
                                                                         context,
                                                                       ),
@@ -287,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ItemList list = listProvider[index];
 
                                                 return InkWell(
-                                                  onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                  onTap: () => GoRouter.of(context).push('/advListDetails/${list.itemId}'),
                                                   child: CustomGridTile(
                                                     constraints: constraints,
                                                     list: list.name!,
@@ -295,7 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     isFinished: list.isFinished!,
                                                     text: 'Alterado em',
                                                     alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                                    delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                    delete: () => ref.read(userProvider.notifier).removeList(
                                                           list.itemId,
                                                           context,
                                                         ),
@@ -355,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         ? Column(
                                                             children: [
                                                               InkWell(
-                                                                onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                                onTap: () => GoRouter.of(context).push('/advListDetails/${list.itemId}'),
                                                                 child: CustomListTile(
                                                                   constraints: constraints,
                                                                   list: list.name!,
@@ -363,7 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   isFinished: list.isFinished!,
                                                                   text: "Alterado em",
                                                                   alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                                                  delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                                  delete: () => ref.read(userProvider.notifier).removeList(
                                                                         list.itemId,
                                                                         context,
                                                                       ),
@@ -397,7 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                                 return list.isFinished! && UtilsMethods.isYesterdayOrToday(list.finishedIn)
                                                     ? InkWell(
-                                                        onTap: () => GoRouter.of(context).push('/listDetails/${list.itemId}'),
+                                                        onTap: () => GoRouter.of(context).push('/advListDetails/${list.itemId}'),
                                                         child: CustomGridTile(
                                                           constraints: constraints,
                                                           list: list.name!,
@@ -405,7 +401,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           isFinished: list.isFinished!,
                                                           text: 'Alterado em',
                                                           alteredIn: DateFormat('dd/MM/yyyy').format(list.alteredIn),
-                                                          delete: () => ref.read(itemListProvider.notifier).removeItem(
+                                                          delete: () => ref.read(userProvider.notifier).removeList(
                                                                 list.itemId,
                                                                 context,
                                                               ),

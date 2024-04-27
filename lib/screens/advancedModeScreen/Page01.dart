@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/widgets/buttonWithIcon.dart';
 
 class Page01 extends StatelessWidget {
@@ -18,7 +19,8 @@ class Page01 extends StatelessWidget {
     return SingleChildScrollView(
       child: Consumer(
         builder: (context, ref, child) {
-          final palette = ref.watch(themeProvider).value;
+          final user = ref.watch(userProvider).value;
+          final palette = user.isAdvanced ? user.palette : ref.watch(themeProvider).value;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -28,7 +30,7 @@ class Page01 extends StatelessWidget {
                 Text(
                   "Introdução",
                   style: TextStyle(
-                    color: palette.titleColor,
+                    color: palette!.titleColor,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                   ),

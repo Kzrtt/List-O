@@ -26,8 +26,6 @@ class MiniButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final palette = ref.watch(themeProvider).value;
-
         return InkWell(
           onTap: onTap,
           child: Container(

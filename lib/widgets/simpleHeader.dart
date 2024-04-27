@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/widgets/selectColor.dart';
@@ -40,7 +41,14 @@ class SimpleHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final palette = ref.watch(themeProvider).value;
+        late final AppPalette? palette;
+        final user = ref.watch(userProvider).value;
+
+        if (user.isAdvanced) {
+          palette = ref.watch(themeProvider).value;
+        } else {
+          palette = ref.watch(userProvider).value.palette;
+        }
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +58,7 @@ class SimpleHeader extends StatelessWidget {
                 Column(
                   children: [
                     Container(
-                      color: palette.tileColor.withOpacity(.7),
+                      color: palette!.tileColor.withOpacity(.7),
                       height: 120,
                       width: constraints.maxWidth,
                       child: Padding(

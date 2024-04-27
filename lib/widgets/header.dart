@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/orientationProvider.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/utils/AppController.dart';
 import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/widgets/selectColor.dart';
@@ -37,8 +38,9 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final palette = ref.watch(themeProvider).value;
-        final orientation = ref.watch(orientationProvider).value;
+        final user = ref.watch(userProvider).value;
+        final palette = user.isAdvanced ? user.palette : ref.watch(themeProvider).value;
+        final orientation = user.isAdvanced ? user.orientation : ref.watch(orientationProvider).value;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +50,7 @@ class Header extends StatelessWidget {
                 Column(
                   children: [
                     Container(
-                      color: palette.tileColor.withOpacity(.7),
+                      color: palette!.tileColor.withOpacity(.7),
                       height: 120,
                       width: constraints.maxWidth,
                       child: Padding(
@@ -62,7 +64,13 @@ class Header extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   InkWell(
-                                    onTap: () => ref.read(orientationProvider.notifier).toggleOrientation(),
+                                    onTap: () {
+                                      if (user.isAdvanced) {
+                                        ref.read(userProvider.notifier).toggleOrientation();
+                                      } else {
+                                        ref.read(orientationProvider.notifier).toggleOrientation();
+                                      }
+                                    },
                                     child: SizedBox(
                                       width: 60,
                                       child: Row(

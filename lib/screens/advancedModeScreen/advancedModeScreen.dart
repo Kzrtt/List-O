@@ -27,13 +27,13 @@ class _AdvancedModeScreenState extends State<AdvancedModeScreen> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final palette = ref.watch(themeProvider).value;
         final user = ref.watch(userProvider).value;
+        final palette = user.isAdvanced ? user.palette : ref.watch(themeProvider).value;
 
         return LayoutBuilder(
           builder: (context, constraints) {
             return Scaffold(
-              backgroundColor: palette.backgroundColor,
+              backgroundColor: palette!.backgroundColor,
               body: SafeArea(
                 child: SizedBox(
                   height: constraints.maxHeight,

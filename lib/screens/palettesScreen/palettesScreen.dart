@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prj_list_app/constants/appPalette.dart';
 import 'package:prj_list_app/controllers/themeProvider.dart';
+import 'package:prj_list_app/controllers/userProvider.dart';
 import 'package:prj_list_app/utils/utilsMethods.dart';
 import 'package:prj_list_app/widgets/header.dart';
 import 'package:prj_list_app/widgets/simpleHeader.dart';
@@ -19,7 +20,8 @@ class _PalettesScreenState extends State<PalettesScreen> {
     return SafeArea(
       child: Consumer(
         builder: (context, ref, child) {
-          final palette = ref.watch(themeProvider).value;
+          final user = ref.watch(userProvider).value;
+          final palette = user.isAdvanced ? user.palette : ref.watch(themeProvider).value;
 
           List colors = [
             AppPalette.lightColorPalette,
@@ -32,7 +34,7 @@ class _PalettesScreenState extends State<PalettesScreen> {
           return LayoutBuilder(
             builder: (context, constraints) {
               return Scaffold(
-                backgroundColor: palette.backgroundColor,
+                backgroundColor: palette!.backgroundColor,
                 body: SizedBox(
                   height: constraints.maxHeight,
                   width: constraints.maxWidth,
@@ -57,11 +59,21 @@ class _PalettesScreenState extends State<PalettesScreen> {
                                   return Column(
                                     children: [
                                       InkWell(
-                                        onTap: () => ref.read(themeProvider.notifier).selectTheme(
-                                              index,
-                                              context,
-                                              'S',
-                                            ),
+                                        onTap: () {
+                                          if (user.isAdvanced) {
+                                            ref.read(userProvider.notifier).selectTheme(
+                                                  index,
+                                                  context,
+                                                  'S',
+                                                );
+                                          } else {
+                                            ref.read(themeProvider.notifier).selectTheme(
+                                                  index,
+                                                  context,
+                                                  'S',
+                                                );
+                                          }
+                                        },
                                         child: Container(
                                           height: 100,
                                           width: constraints.maxWidth * .9,
