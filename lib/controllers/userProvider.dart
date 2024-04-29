@@ -29,6 +29,102 @@ final class UserProvider extends ValueNotifier<User> {
   UserProvider(User user) : super(user);
 
   //? Manipulação das Listas do Usuário
+  Future<void> removeItemInList(String itemId, String listId) async {
+    // Assume que 'value' é uma referência mutável ao estado atual (como em um StateNotifier).
+    List<ItemList> userDecodedList = value.itemList;
+    int index = userDecodedList.indexWhere((list) => list.itemId == listId);
+
+    if (index != -1) {
+      // Se encontrou a lista
+      ItemList list = userDecodedList[index];
+      list.items = list.items!.where((element) => element.id != itemId).toList();
+      list.alteredIn = DateTime.now();
+    } else {
+      print("erro");
+    }
+
+    await updateUser(value);
+    notifyListeners();
+  }
+
+  Future<void> recheckItemInList(String itemId, String listId) async {
+    List<ItemList> userCodedList = value.itemList;
+    int listIndex = userCodedList.indexWhere((list) => list.itemId == listId);
+
+    if (listIndex != -1) {
+      // Se encontrou a lista
+      ItemList list = userCodedList[listIndex];
+      for (var i = 0; i < list.items!.length; i++) {
+        if (list.items![i].id == itemId) {
+          // Corrigido para usar `i` em vez de `listIndex`
+          list.items![i].isChecked = false; // Também adicionado toggle para isChecked
+          list.isFinished = false;
+          list.alteredIn = DateTime.now();
+          break; // Parar o loop uma vez que o item foi encontrado e modificado
+        }
+      }
+    } else {
+      print("Lista não encontrada");
+    }
+
+    await updateUser(value);
+    notifyListeners();
+  }
+
+  Future<void> checkItemInList(String itemId, String listId) async {
+    List<ItemList> userDecodedList = value.itemList;
+    int listIndex = userDecodedList.indexWhere((list) => list.itemId == listId);
+
+    if (listIndex != -1) {
+      // Se encontrou a lista
+      ItemList list = userDecodedList[listIndex];
+      bool isAllChecked = true;
+      for (var i = 0; i < list.items!.length; i++) {
+        if (list.items![i].id == itemId) {
+          // Corrigido para usar `i` em vez de `listIndex`
+          list.items![i].isChecked = true; // Também adicionado toggle para isChecked
+        }
+      }
+      for (var i = 0; i < list.items!.length; i++) {
+        if (!list.items![i].isChecked!) {
+          isAllChecked = false;
+        }
+      }
+      if (isAllChecked) {
+        list.isFinished = true;
+        list.finishedIn = DateTime.now();
+      }
+      list.alteredIn = DateTime.now();
+    } else {
+      print("Lista não encontrada");
+    }
+
+    await updateUser(value);
+    notifyListeners(); // Notifica os ouvintes sobre a mudança
+  }
+
+  Future<void> addItemInList(Item item, String listId) async {
+    // Assume que 'value' é uma referência mutável ao estado atual (como em um StateNotifier).
+    List<ItemList> userDecodedList = value.itemList;
+    int index = userDecodedList.indexWhere((list) => list.itemId == listId);
+
+    if (index != -1) {
+      // Se encontrou a lista
+      ItemList list = userDecodedList[index];
+      list.items = [...list.items!, item]; // Adiciona o novo item
+      list.alteredIn = DateTime.now();
+      userDecodedList[index] = list; // Atualiza a lista no estado
+      value.itemList = userDecodedList;
+    } else {
+      print("erro");
+    }
+
+    // Aqui você deve notificar sobre a alteração do estado, se estiver usando StateNotifier
+    // Por exemplo: state = [...value];
+    await updateUser(value);
+    notifyListeners();
+  }
+
   ItemList getList(String listId) {
     List<ItemList> lists = value.itemList;
     for (var i = 0; i < lists.length; i++) {
@@ -45,6 +141,7 @@ final class UserProvider extends ValueNotifier<User> {
       if (userItemList[i].itemId == listId) {
         userItemList[i].name = updatedList.name;
         userItemList[i].details = updatedList.details;
+        userItemList[i].alteredIn = DateTime.now();
       }
     }
     value.itemList = userItemList;

@@ -184,7 +184,7 @@ class _AdvListDetailsScreenState extends State<AdvListDetailsScreen> {
                                             addItemFormKey.currentState!.save();
                                             item.isChecked = false;
                                             item.id = list.items!.length.toString();
-                                            ref.read(itemListProvider.notifier).addItemInList(
+                                            ref.read(userProvider.notifier).addItemInList(
                                                   item,
                                                   widget.listId,
                                                 );
@@ -269,13 +269,13 @@ class _AdvListDetailsScreenState extends State<AdvListDetailsScreen> {
                                                 details: "${item.quantity} ${item.measurementUnity}",
                                                 index: (index + 1).toString(),
                                                 isChecked: item.isChecked!,
-                                                onTap1: () => ref.read(itemListProvider.notifier).recheckItemInList(
+                                                onTap1: () => ref.read(userProvider.notifier).recheckItemInList(
                                                       item.id!,
                                                       widget.listId,
                                                     ),
                                                 onTap2: () async {
                                                   if (!item.isChecked!) {
-                                                    await ref.read(itemListProvider.notifier).checkItemInList(
+                                                    await ref.read(userProvider.notifier).checkItemInList(
                                                           item.id!,
                                                           widget.listId,
                                                         );
@@ -290,7 +290,7 @@ class _AdvListDetailsScreenState extends State<AdvListDetailsScreen> {
                                                     }
                                                     print(isAllChecked);
                                                   } else {
-                                                    ref.read(itemListProvider.notifier).removeItemInList(
+                                                    ref.read(userProvider.notifier).removeItemInList(
                                                           item.id!,
                                                           widget.listId,
                                                         );
@@ -330,13 +330,13 @@ class _AdvListDetailsScreenState extends State<AdvListDetailsScreen> {
                                           details: "${item.quantity} ${item.measurementUnity}",
                                           index: (index + 1).toString(),
                                           isChecked: item.isChecked!,
-                                          onTap1: () => ref.read(itemListProvider.notifier).recheckItemInList(
+                                          onTap1: () => ref.read(userProvider.notifier).recheckItemInList(
                                                 item.id!,
                                                 widget.listId,
                                               ),
                                           onTap2: () async {
                                             if (!item.isChecked!) {
-                                              await ref.read(itemListProvider.notifier).checkItemInList(
+                                              await ref.read(userProvider.notifier).checkItemInList(
                                                     item.id!,
                                                     widget.listId,
                                                   );
@@ -351,7 +351,7 @@ class _AdvListDetailsScreenState extends State<AdvListDetailsScreen> {
                                               }
                                               print(isAllChecked);
                                             } else {
-                                              ref.read(itemListProvider.notifier).removeItemInList(
+                                              ref.read(userProvider.notifier).removeItemInList(
                                                     item.id!,
                                                     widget.listId,
                                                   );

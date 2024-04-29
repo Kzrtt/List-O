@@ -227,11 +227,12 @@ class _AdvHomeScreenState extends State<AdvHomeScreen> {
                                 ),
                               ),
                               const SizedBox(height: 20),
-                              listProvider.isNotEmpty
+                              listProvider.isNotEmpty && listProvider.any((element) => element.isFinished != true)
                                   ? orientation == "list"
                                       ? Wrap(
                                           children: [
-                                            SizedBox(
+                                            Container(
+                                              constraints: const BoxConstraints(minHeight: 100),
                                               child: Column(
                                                 children: List.generate(
                                                   listProvider.length,
@@ -266,7 +267,8 @@ class _AdvHomeScreenState extends State<AdvHomeScreen> {
                                             )
                                           ],
                                         )
-                                      : SizedBox(
+                                      : Container(
+                                          constraints: const BoxConstraints(minHeight: 100),
                                           width: constraints.maxWidth * .95,
                                           child: Padding(
                                             padding: const EdgeInsets.only(left: 20),
@@ -278,9 +280,9 @@ class _AdvHomeScreenState extends State<AdvHomeScreen> {
                                                 crossAxisSpacing: 20.0,
                                                 mainAxisSpacing: 20.0,
                                               ),
-                                              itemCount: listProvider.length,
+                                              itemCount: listProvider.where((element) => element.isFinished! != true).toList().length,
                                               itemBuilder: (context, index) {
-                                                ItemList list = listProvider[index];
+                                                ItemList list = listProvider.where((element) => element.isFinished! != true).toList()[index];
 
                                                 return InkWell(
                                                   onTap: () => GoRouter.of(context).push('/advListDetails/${list.itemId}'),
@@ -305,7 +307,7 @@ class _AdvHomeScreenState extends State<AdvHomeScreen> {
                                   : Padding(
                                       padding: const EdgeInsets.only(top: 30),
                                       child: SizedBox(
-                                        height: 250,
+                                        height: 150,
                                         width: constraints.maxWidth,
                                         child: SvgPicture.asset(
                                           palette.homePageImage!,
@@ -377,6 +379,7 @@ class _AdvHomeScreenState extends State<AdvHomeScreen> {
                                           ],
                                         )
                                       : SizedBox(
+                                          height: 180.0 * (listProvider.where((element) => element.isFinished!).toList().length),
                                           width: constraints.maxWidth * .95,
                                           child: Padding(
                                             padding: const EdgeInsets.only(left: 20),
@@ -387,9 +390,9 @@ class _AdvHomeScreenState extends State<AdvHomeScreen> {
                                                 crossAxisSpacing: 20.0,
                                                 mainAxisSpacing: 20.0,
                                               ),
-                                              itemCount: listProvider.length,
+                                              itemCount: listProvider.where((element) => element.isFinished!).toList().length,
                                               itemBuilder: (context, index) {
-                                                ItemList list = listProvider[index];
+                                                ItemList list = listProvider.where((element) => element.isFinished!).toList()[index];
 
                                                 return list.isFinished! && UtilsMethods.isYesterdayOrToday(list.finishedIn)
                                                     ? InkWell(

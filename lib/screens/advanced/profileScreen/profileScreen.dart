@@ -110,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 40),
                         InkWell(
-                          onTap: () => GoRouter.of(context).push("/oldLists"),
+                          onTap: () => GoRouter.of(context).push("/advOldLists"),
                           child: EditOptionButton(
                             constraints: constraints,
                             title: "Listas Antigas",

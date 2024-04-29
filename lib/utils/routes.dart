@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:prj_list_app/advancedModeScreens/advListDetailsScreen/advListDetailsScreen.dart';
-import 'package:prj_list_app/advancedModeScreens/advModeHomeScreen/advHomeScreen.dart';
-import 'package:prj_list_app/screens/advancedModeScreen/advancedModeScreen.dart';
-import 'package:prj_list_app/screens/homeScreen/homeScreen.dart';
-import 'package:prj_list_app/screens/listDetailsScreen/listDetailsScreen.dart';
+import 'package:prj_list_app/screens/advanced/advListDetailsScreen/advListDetailsScreen.dart';
+import 'package:prj_list_app/screens/advanced/advModeHomeScreen/advHomeScreen.dart';
+import 'package:prj_list_app/screens/advanced/advOldListsScreen/advOldListsScreen.dart';
+import 'package:prj_list_app/screens/base/advancedModeScreen/advancedModeScreen.dart';
+import 'package:prj_list_app/screens/base/homeScreen/homeScreen.dart';
+import 'package:prj_list_app/screens/base/listDetailsScreen/listDetailsScreen.dart';
 import 'package:prj_list_app/screens/loginScreen/loginScreen.dart';
-import 'package:prj_list_app/screens/oldListScreen/oldListsScreen.dart';
+import 'package:prj_list_app/screens/base/oldListScreen/oldListsScreen.dart';
 import 'package:prj_list_app/screens/palettesScreen/palettesScreen.dart';
-import 'package:prj_list_app/advancedModeScreens/profileScreen/profileScreen.dart';
+import 'package:prj_list_app/screens/advanced/profileScreen/profileScreen.dart';
 import 'package:prj_list_app/screens/signUpScreen/signUpScreen.dart';
 import 'package:prj_list_app/screens/splashScreen.dart';
 
@@ -114,6 +115,15 @@ final routes = GoRouter(
           child: AdvListDetailsScreen(
             listId: listId!,
           ),
+          fullscreenDialog: true,
+        );
+      },
+    ),
+    GoRoute(
+      path: "/advOldLists",
+      pageBuilder: (context, state) {
+        return const MaterialPage(
+          child: AdvOldListScreen(),
           fullscreenDialog: true,
         );
       },
