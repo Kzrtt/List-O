@@ -394,6 +394,7 @@ final class UserProvider extends ValueNotifier<User> {
 
     //? Atribuindo o usuario com email escolhido como usuário atual
     value = userDecodedList.firstWhere((element) => element.email == email);
+
     prefs.setString(PrefsContants.signedUser, email);
 
     notifyListeners();

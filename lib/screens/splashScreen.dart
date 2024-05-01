@@ -42,8 +42,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       print(element.name);
     }
 
-    await ref.read(userProvider.notifier).getUserByEmail(userEmail);
-
     print("palette: $palette");
     if (palette == "") {
       palette = "1";
